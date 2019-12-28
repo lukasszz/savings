@@ -1,5 +1,21 @@
 # Savings 
 
+kurs: https://www.learnpyqt.com/ (75 zł)
+
+https://wiki.qt.io/Technical_FAQ
+
+## 2019-12-26
+
+Autoresize of window: Click right on QDialog in Crator and select the Layout.
+
+https://doc.qt.io/qt-5/layout.html
+
+insertRecord() works with OnManualSubmit()
+
+```sql
+model1.select() # With OnFieldChange we need to refresh data to get back the id
+```
+
 
 
 ## 2019-12-24
