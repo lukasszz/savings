@@ -1,3 +1,3 @@
 {
-    "files": ["mainwindow.h","bank.py","mainwindow.ui","mainwindow.cpp","ddd.ui","bank.ui","dialog.ui","abc.py","bank_list.ui"]
+    "files": ["mainwindow.h","dialog.ui","bank_list.ui","mainwindow.ui","ddd.ui","mainwindow.cpp","bank.py","abc.py","bank.ui","mainwindow.ui"]
 }
