@@ -1,41 +1,75 @@
 import sys
 
 from PySide2.QtCore import qInstallMessageHandler, QFile
+from PySide2.QtSql import QSqlTableModel, QSqlDatabase
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QDialog, QCheckBox, QWidget, QLineEdit, QMainWindow
+from PySide2.scripts import uic
+
+from db import Session
+from db.model import Asset
+
+
+class AssetEd:
+    dialog: QDialog
+
+    def __init__(self):
+        super().__init__()
+        self.dialog = QUiLoader().load("form/asset_ed.ui")
+        self.name: QLineEdit = self.dialog.findChild(QLineEdit, 'name')
+        self.chck: QCheckBox = self.dialog.findChild(QCheckBox, 'active')
+        self.chck.setChecked(True)
+
+        self.dialog.accepted.connect(self.accept)
+
+    def accept(self):
+        a = Asset(name=self.name.text(), active=True)
+        session = Session()
+        session.add(a)
+        session.commit()
+
+
+class MainWindow:
+    asset_model: QSqlTableModel
+    window: QMainWindow
+
+    def __init__(self):
+        super().__init__()
+        self.window = QUiLoader().load("form/mainwindow.ui")
+
+        self.asset_model = QSqlTableModel(db=db)
+        self.asset_model.setTable("asset")
+        self.asset_model.setEditStrategy(QSqlTableModel.OnFieldChange)
+        # model.setEditStrategy(QSqlTableModel.OnRowChange)
+        # model.setEditStrategy(QSqlTableModel.OnManualSubmit)
+        self.asset_model.select()
+
+        # noinspection PyTypeChecker
+        self.list1: QTableView = self.window.findChild(QTableView, 'asset_table')
+        self.list1.setModel(self.asset_model)
+        self.list1.hideColumn(0)
+
+        self.asset_new: QPushButton = self.window.findChild(QPushButton, 'asset_new')
+        self.asset_new.clicked.connect(
+            lambda: self.action_asset_ed())
+
+    def action_asset_ed(self):
+        dlg = AssetEd()
+        dlg.dialog.exec()
+        self.asset_model.select()
+
 
 if __name__ == "__main__":
-    # Create db during first run
-    # from exp.db import engine, Base
-    # from exp.db.model import Bank
-    #
-    # Base.metadata.create_all(engine)
-
-    # db = QSqlDatabase.addDatabase("QSQLITE")
-    # db.setDatabaseName("../db2.sqlite")
-    # if not db.open():
-    #     print("Cannot open the database")
-    #     exit(1)
 
     app = QApplication(sys.argv)
 
-    ui_file = QFile("form/mainwindow.ui")
-    ui_file.open(QFile.ReadOnly)
+    db = QSqlDatabase.addDatabase("QSQLITE")
+    db.setDatabaseName("db.sqlite")
+    if not db.open():
+        print("Cannot open the database")
+        exit(1)
 
-    loader = QUiLoader()
-    window = loader.load(ui_file)
-    ui_file.close()
-    window.show()
-    # new1: QPushButton = window.findChild(QPushButton, 'newButton')
-    # model1 = get_model()
-    # list1: QTableView = window.findChild(QTableView, 'tableView')
-    # list1.setModel(model1)
-    # list1.hideColumn(0)
-    # list1.setItemDelegateForColumn(2, CheckboxDelegate())
-    # button: QPushButton = window.findChild(QPushButton, 'pushButton')
-    # buttonSel: QPushButton = window.findChild(QPushButton, 'pushButtonSelect')
-    # edit: QLineEdit = window.findChild(QLineEdit, 'lineEdit')
-    # # button.setEnabled(False)
-    # button.clicked.connect(klik)
-    # buttonSel.clicked.connect(klik2)
+    w = MainWindow().window
+    w.show()
+
     sys.exit(app.exec_())
