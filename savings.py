@@ -1,13 +1,33 @@
 import sys
 
-from PySide2.QtCore import qInstallMessageHandler, QFile
+import PySide2
+from PySide2.QtCore import qInstallMessageHandler
 from PySide2.QtSql import QSqlTableModel, QSqlDatabase
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QDialog, QCheckBox, QWidget, QLineEdit, QMainWindow
-from PySide2.scripts import uic
+from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QDialog, QCheckBox, QLineEdit, \
+    QMainWindow, QStyledItemDelegate, QStyleOptionButton, QStyle
 
 from db import Session
 from db.model import Asset
+
+
+# // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
+class CheckboxDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        value = index.data()
+
+        opt = QStyleOptionButton()
+        if value:
+            opt.state = QStyle.State_On
+        else:
+            opt.state = QStyle.State_Off
+        opt.rect = option.rect
+
+        QApplication.style().drawControl(QStyle.CE_CheckBox, opt, painter)
+
+    def createEditor(self, parent: PySide2.QtWidgets.QWidget, option: PySide2.QtWidgets.QStyleOptionViewItem,
+                     index: PySide2.QtCore.QModelIndex) -> PySide2.QtWidgets.QWidget:
+        return QCheckBox(parent)
 
 
 class AssetEd:
@@ -48,6 +68,7 @@ class MainWindow:
         self.list1: QTableView = self.window.findChild(QTableView, 'asset_table')
         self.list1.setModel(self.asset_model)
         self.list1.hideColumn(0)
+        self.list1.setItemDelegateForColumn(2, CheckboxDelegate())
 
         self.asset_new: QPushButton = self.window.findChild(QPushButton, 'asset_new')
         self.asset_new.clicked.connect(
