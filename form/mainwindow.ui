@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1154</width>
-    <height>662</height>
+    <width>1405</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,7 +67,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QTableView" name="asset_table"/>
+       <widget class="QTableView" name="asset_table">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -78,7 +82,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1154</width>
+     <width>1405</width>
      <height>46</height>
     </rect>
    </property>

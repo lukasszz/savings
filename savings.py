@@ -5,7 +5,7 @@ from PySide2.QtCore import qInstallMessageHandler
 from PySide2.QtSql import QSqlTableModel, QSqlDatabase
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QDialog, QCheckBox, QLineEdit, \
-    QMainWindow, QStyledItemDelegate, QStyleOptionButton, QStyle
+    QMainWindow, QStyledItemDelegate, QStyleOptionButton, QStyle, QAction
 
 from db import Session
 from db.model import Asset
@@ -65,19 +65,29 @@ class MainWindow:
         self.asset_model.select()
 
         # noinspection PyTypeChecker
-        self.list1: QTableView = self.window.findChild(QTableView, 'asset_table')
-        self.list1.setModel(self.asset_model)
-        self.list1.hideColumn(0)
-        self.list1.setItemDelegateForColumn(2, CheckboxDelegate())
+        self.asset_list: QTableView = self.window.findChild(QTableView, 'asset_table')
+        self.asset_list.setModel(self.asset_model)
+        self.asset_list.hideColumn(0)
+        self.asset_list.setItemDelegateForColumn(2, CheckboxDelegate())
+        # self.asset_list.contextMenuEvent = (lambda self.asset_list, event: self.cm
 
         self.asset_new: QPushButton = self.window.findChild(QPushButton, 'asset_new')
         self.asset_new.clicked.connect(
             lambda: self.action_asset_ed())
 
+        # https://wiki.python.org/moin/PyQt/Handling%20context%20menus
+        quitAction = QAction("Quit", self.asset_list)
+        quitAction.triggered.connect(lambda: self.cm(self.asset_list))
+        self.asset_list.addAction(quitAction)
+
     def action_asset_ed(self):
         dlg = AssetEd()
         dlg.dialog.exec()
         self.asset_model.select()
+
+    def cm(self, wg):
+        print(wg)
+        print("Contex menu")
 
 
 if __name__ == "__main__":
@@ -91,6 +101,7 @@ if __name__ == "__main__":
         exit(1)
 
     w = MainWindow().window
+
     w.show()
 
     sys.exit(app.exec_())
