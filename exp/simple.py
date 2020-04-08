@@ -22,10 +22,18 @@ class Form(QDialog):
     def msg(self):
         print("Bank saved")
 
+    def contextMenuEvent(self, event):
+        print("Menu!")
+
+    def contextMenuEventExt(self, event):
+        print("Menu external!")
+
+
 
 if '__main__' == __name__:
     app = QApplication(sys.argv)
     form = Form()
+    form.contextMenuEvent = form.contextMenuEventExt
     form.show()
 
     sys.exit(app.exec_())
