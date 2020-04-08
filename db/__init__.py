@@ -7,6 +7,7 @@ Base.metadata.create_all(engine)
 
 Add rows
 --------
+from db import engine, Base, Session
 import exp.db as db
 from exp.db.model import Bank
 bank = Bank(name='Inteligo', active=True)

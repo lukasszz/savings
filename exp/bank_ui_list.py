@@ -28,7 +28,7 @@ def qt_message_handler(mode, context, message):
 
 def get_model():
     model = QSqlTableModel(db=db)
-    model.setTable("bank")
+    model.setTable("asset")
     model.setEditStrategy(QSqlTableModel.OnFieldChange)
     # model.setEditStrategy(QSqlTableModel.OnRowChange)
     # model.setEditStrategy(QSqlTableModel.OnManualSubmit)
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # Base.metadata.create_all(engine)
 
     db = QSqlDatabase.addDatabase("QSQLITE")
-    db.setDatabaseName("../db2.sqlite")
+    db.setDatabaseName("../db.sqlite")
     if not db.open():
         print("Cannot open the database")
         exit(1)
