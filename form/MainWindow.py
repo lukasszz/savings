@@ -1,14 +1,16 @@
 import PySide2
 from PySide2.QtCore import qInstallMessageHandler
-from PySide2.QtSql import QSqlTableModel, QSqlDatabase
+from PySide2.QtSql import QSqlTableModel, QSqlDatabase, QSqlQueryModel
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
     QStyleOptionButton, QStyle, QAction
 
 from form.AssetEd import AssetEd
 
-
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
+from form.BudgetEd import BudgetEd
+
+
 class CheckboxDelegate(QStyledItemDelegate):
     def paint(self, painter, option, index):
         value = index.data()
@@ -35,6 +37,7 @@ class MainWindow:
         super().__init__()
         self.window = QUiLoader().load("form/mainwindow.ui")
         self.setup_asset_list()
+        self.budget_list = BudgetList(self.window.findChild(QTableView, 'budget_list'))
 
     def setup_asset_list(self):
         db = QSqlDatabase.addDatabase("QSQLITE")
@@ -51,7 +54,7 @@ class MainWindow:
         self.asset_model.select()
 
         # noinspection PyTypeChecker
-        self.asset_list: QTableView = self.window.findChild(QTableView, 'asset_table')
+        self.asset_list: QTableView = self.window.findChild(QTableView, 'asset_list')
         self.asset_list.setModel(self.asset_model)
         self.asset_list.setSelectionBehavior(PySide2.QtWidgets.QAbstractItemView.SelectRows)
         self.asset_list.hideColumn(0)
@@ -83,8 +86,47 @@ class MainWindow:
     def action_asset_ed(self):
         row = self.asset_list.selectedIndexes()[0].row()
         idx = self.asset_model.index(row, 0)
-        id = self.asset_model.data(idx)
-        print(id)
-        dlg = AssetEd(id)
+        id_ = self.asset_model.data(idx)
+        dlg = AssetEd(id_)
         dlg.dialog.exec()
         self.asset_model.select()
+
+
+class BudgetList:
+
+    def __init__(self, list_: QTableView):
+        # self.window = window
+        self.list = list_
+        self.model = QSqlQueryModel()
+
+        self.build_model()
+        self.build_menu()
+        self.configure_list()
+
+    def build_model(self):
+        self.model.setQuery("SELECT id, name FROM budget ORDER BY name")
+        self.list.setModel(self.model)
+
+    def build_menu(self):
+        act = QAction("New", self.list)
+        act.triggered.connect(self.act_new)
+        self.list.addAction(act)
+        act = QAction("Edit", self.list)
+        act.triggered.connect(self.act_ed)
+        self.list.addAction(act)
+
+    def act_new(self):
+        dlg = BudgetEd()
+        dlg.dialog.exec()
+        self.model.query().exec_()
+
+    def act_ed(self):
+        row = self.list.selectedIndexes()[0].row()
+        idx = self.model.index(row, 0)
+        id_ = self.model.data(idx)
+        dlg = BudgetEd(id_)
+        dlg.dialog.exec()
+        self.model.query().exec_()
+
+    def configure_list(self):
+        self.list.hideColumn(0)
