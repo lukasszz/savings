@@ -6,7 +6,6 @@ from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, 
     QStyleOptionButton, QStyle, QAction
 
 from form.AssetEd import AssetEd
-
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
 from form.IncomeOutcomeEd import IncomeOutcomeEd
@@ -94,6 +93,15 @@ class MainWindow:
 
     def action_income_outcome_new(self):
         dlg = IncomeOutcomeEd()
+
+        row = self.asset_list.selectedIndexes()
+        if len(row) > 0:
+            row = row[0].row()
+            idx = self.asset_model.index(row, 0)
+            id_ = self.asset_model.data(idx)
+            cidx = dlg.asset.findData(id_)
+            dlg.asset.setCurrentIndex(cidx)
+
         dlg.dialog.exec()
         self.asset_model.select()
         self.budget_list.model.query().exec_()
