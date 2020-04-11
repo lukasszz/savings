@@ -9,6 +9,7 @@ from form.AssetEd import AssetEd
 
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
+from form.IncomeOutcomeEd import IncomeOutcomeEd
 
 
 class CheckboxDelegate(QStyledItemDelegate):
@@ -38,6 +39,9 @@ class MainWindow:
         self.window = QUiLoader().load("form/mainwindow.ui")
         self.setup_asset_list()
         self.budget_list = BudgetList(self.window.findChild(QTableView, 'budget_list'))
+        self.asset_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
+        self.asset_new.clicked.connect(
+            lambda: self.action_income_outcome_new())
 
     def setup_asset_list(self):
         db = QSqlDatabase.addDatabase("QSQLITE")
@@ -60,9 +64,6 @@ class MainWindow:
         self.asset_list.hideColumn(0)
         self.asset_list.setItemDelegateForColumn(2, CheckboxDelegate())
 
-        self.asset_new: QPushButton = self.window.findChild(QPushButton, 'asset_new')
-        self.asset_new.clicked.connect(
-            lambda: self.action_asset_new())
 
         # https://wiki.python.org/moin/PyQt/Handling%20context%20menus
         # Menu
@@ -90,6 +91,12 @@ class MainWindow:
         dlg = AssetEd(id_)
         dlg.dialog.exec()
         self.asset_model.select()
+
+    def action_income_outcome_new(self):
+        dlg = IncomeOutcomeEd()
+        dlg.dialog.exec()
+        self.asset_model.select()
+        self.budget_list.model.query().exec_()
 
 
 class BudgetList:
