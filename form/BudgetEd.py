@@ -25,10 +25,8 @@ class BudgetEd:
             self.active.setChecked(True)
 
         self.dialog.accepted.connect(self.accept)
-        print('added acction')
 
     def accept(self):
-        print('enter acction')
         session = Session()
         if self.obj_id is not None:
             a: Budget = session.query(Budget).get(self.obj_id)

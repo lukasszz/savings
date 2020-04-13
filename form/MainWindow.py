@@ -35,76 +35,81 @@ class MainWindow:
 
     def __init__(self):
         super().__init__()
-        self.window = QUiLoader().load("form/mainwindow.ui")
-        self.setup_asset_list()
-        self.budget_list = BudgetList(self.window.findChild(QTableView, 'budget_list'))
-        self.asset_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
-        self.asset_new.clicked.connect(
-            lambda: self.action_income_outcome_new())
-
-    def setup_asset_list(self):
         db = QSqlDatabase.addDatabase("QSQLITE")
         db.setDatabaseName("db.sqlite")
         if not db.open():
             print("Cannot open the database")
             exit(1)
 
-        self.asset_model = QSqlTableModel(db=db)
-        self.asset_model.setTable("asset")
-        self.asset_model.setEditStrategy(QSqlTableModel.OnFieldChange)
-        # model.setEditStrategy(QSqlTableModel.OnRowChange)
-        # model.setEditStrategy(QSqlTableModel.OnManualSubmit)
-        self.asset_model.select()
-
-        # noinspection PyTypeChecker
-        self.asset_list: QTableView = self.window.findChild(QTableView, 'asset_list')
-        self.asset_list.setModel(self.asset_model)
-        self.asset_list.setSelectionBehavior(PySide2.QtWidgets.QAbstractItemView.SelectRows)
-        self.asset_list.hideColumn(0)
-        self.asset_list.setItemDelegateForColumn(2, CheckboxDelegate())
-
-
-        # https://wiki.python.org/moin/PyQt/Handling%20context%20menus
-        # Menu
-        new_act = QAction("New", self.window)
-        new_act.triggered.connect(self.action_asset_new)
-        self.asset_list.addAction(new_act)
-
-        sep = QAction(self.window)
-        sep.setSeparator(True)
-        self.asset_list.addAction(sep)
-
-        edit_act = QAction("Edit", self.window)
-        edit_act.triggered.connect(self.action_asset_ed)
-        self.asset_list.addAction(edit_act)
-
-    def action_asset_new(self):
-        dlg = AssetEd()
-        dlg.dialog.exec()
-        self.asset_model.select()
-
-    def action_asset_ed(self):
-        row = self.asset_list.selectedIndexes()[0].row()
-        idx = self.asset_model.index(row, 0)
-        id_ = self.asset_model.data(idx)
-        dlg = AssetEd(id_)
-        dlg.dialog.exec()
-        self.asset_model.select()
+        self.window = QUiLoader().load("form/mainwindow.ui")
+        # self.setup_asset_list()
+        self.budget_table = BudgetList(self.window.findChild(QTableView, 'budget_list'))
+        self.asset_table = AssetTable(self.window.findChild(QTableView, 'asset_list'))
+        self.io_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
+        self.io_new.clicked.connect(
+            lambda: self.action_income_outcome_new())
 
     def action_income_outcome_new(self):
         dlg = IncomeOutcomeEd()
 
-        row = self.asset_list.selectedIndexes()
+        row = self.asset_table.table.selectedIndexes()
         if len(row) > 0:
             row = row[0].row()
-            idx = self.asset_model.index(row, 0)
-            id_ = self.asset_model.data(idx)
+            idx = self.asset_table.model.index(row, 0)
+            id_ = self.asset_table.model.data(idx)
             cidx = dlg.asset.findData(id_)
             dlg.asset.setCurrentIndex(cidx)
 
         dlg.dialog.exec()
-        self.asset_model.select()
-        self.budget_list.model.query().exec_()
+        self.asset_table.model.setQuery(self.asset_table.model.query())
+        self.budget_table.model.setQuery(self.budget_table.model.query())
+        self.asset_table.model.query().exec_()
+        self.budget_table.model.query().exec_()
+
+
+class AssetTable:
+    def __init__(self, table: QTableView):
+        # self.window = window
+        self.table = table
+        self.model = QSqlQueryModel()
+
+        self.build_model()
+        self.build_menu()
+        self.configure_list()
+
+    def build_model(self):
+        self.model.setQuery("SELECT a.id, a.name, SUM(coalesce(s.amount, 0.00)) as amount\
+                            FROM asset AS a\
+                                LEFT OUTER JOIN transaction_split as s ON s.id_asset = a.id\
+                            GROUP BY a.id\
+                            ORDER BY name")
+        self.table.setModel(self.model)
+
+    def build_menu(self):
+        act = QAction("New", self.table)
+        act.triggered.connect(self.act_new)
+        self.table.addAction(act)
+        act = QAction("Edit", self.table)
+        act.triggered.connect(self.act_ed)
+        self.table.addAction(act)
+
+    def act_new(self):
+        dlg = AssetEd()
+        dlg.dialog.exec()
+        print(self.model.rowCount())
+        self.model.query().exec_()
+        self.model.setQuery(self.model.query())  # Why I need to this?
+
+    def act_ed(self):
+        row = self.table.selectedIndexes()[0].row()
+        idx = self.model.index(row, 0)
+        id_ = self.model.data(idx)
+        dlg = AssetEd(id_)
+        dlg.dialog.exec()
+        self.model.query().exec_()  # or why I works without setting the query again?
+
+    def configure_list(self):
+        self.table.hideColumn(0)
 
 
 class BudgetList:
@@ -139,7 +144,7 @@ class BudgetList:
         dlg.dialog.exec()
         print(self.model.rowCount())
         self.model.query().exec_()
-        self.model.setQuery(self.model.query()) # Why I need to this?
+        self.model.setQuery(self.model.query())  # Why I need to this?
 
     def act_ed(self):
         row = self.list.selectedIndexes()[0].row()
@@ -147,7 +152,7 @@ class BudgetList:
         id_ = self.model.data(idx)
         dlg = BudgetEd(id_)
         dlg.dialog.exec()
-        self.model.query().exec_() # or why I works without setting the query again?
+        self.model.query().exec_()  # or why I works without setting the query again?
 
     def configure_list(self):
         self.list.hideColumn(0)

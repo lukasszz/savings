@@ -77,6 +77,7 @@ class IncomeOutcomeEd:
 
             split = TransactionSplit()
             split.id_budget = bud_id
+            split.id_asset = self.asset.currentData(Qt.UserRole)
             split.amount = amount
             t.splits.append(split)
         session = Session()
