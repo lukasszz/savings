@@ -1,10 +1,12 @@
+from decimal import Decimal
+
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QStandardItemModel, QStandardItem
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QTableView, QComboBox
 
 from db import Session
-from db.model import Budget, Asset
+from db.model import Budget, Asset, Transaction, TransactionSplit
 
 
 class BudgetTable:
@@ -26,7 +28,7 @@ class BudgetTable:
             id.setEditable(False)
             name = QStandardItem(b.name)
             name.setEditable(False)
-            amount = QStandardItem('0,00')
+            amount = QStandardItem('0.00')
             amount.setTextAlignment(Qt.AlignRight)
             self.model.appendRow([id, name, amount])
 
@@ -48,6 +50,8 @@ class IncomeOutcomeEd:
         else:
             pass
 
+        self.dialog.accepted.connect(self.accept)
+
     def load_asset_model(self):
         session = Session()
         assets = session.query(Asset).filter(True == Asset.active)
@@ -61,3 +65,20 @@ class IncomeOutcomeEd:
             model.appendRow(item)
 
         self.asset.setModel(model)
+
+    def accept(self):
+        t = Transaction()
+        m = self.bugets_table.model
+        for idx in range(m.rowCount()):
+            bud_id = m.item(idx, 0).data(0)
+            amount = Decimal(m.item(idx, 2).data(0))
+            if amount == Decimal('0.00'):
+                continue
+
+            split = TransactionSplit()
+            split.id_budget = bud_id
+            split.amount = amount
+            t.splits.append(split)
+        session = Session()
+        session.add(t)
+        session.commit()

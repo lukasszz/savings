@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, Numeric, ForeignKey
+from sqlalchemy.orm import relationship
 
 from db import Base
 
@@ -33,13 +34,17 @@ class Transaction(Base):
     date = Column(Date)
     currency = Column(String)
 
+    splits = relationship("TransactionSplit", back_populates="transaction")
 
-class TransatctionSplit(Base):
+
+class TransactionSplit(Base):
     __tablename__ = 'transaction_split'
 
     id = Column(Integer, primary_key=True)
     amount = Column(Numeric(12, 2))
     desc = Column(String)
     id_transaction = Column(Integer, ForeignKey("transaction.id"), nullable=False)
-    id_asset = Column(Integer, ForeignKey("asset.id"), nullable=False)
-    id_budget = Column(Integer, ForeignKey("budget.id"), nullable=False)
+    id_asset = Column(Integer, ForeignKey("asset.id"), nullable=True)
+    id_budget = Column(Integer, ForeignKey("budget.id"), nullable=True)
+
+    transaction = relationship("Transaction", back_populates='splits')

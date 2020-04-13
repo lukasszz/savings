@@ -119,7 +119,11 @@ class BudgetList:
         self.configure_list()
 
     def build_model(self):
-        self.model.setQuery("SELECT id, name FROM budget ORDER BY name")
+        self.model.setQuery("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
+                            FROM budget AS b\
+                                LEFT OUTER JOIN transaction_split as s ON s.id_budget = b.id\
+                            GROUP BY b.id\
+                            ORDER BY name")
         self.list.setModel(self.model)
 
     def build_menu(self):
@@ -133,7 +137,9 @@ class BudgetList:
     def act_new(self):
         dlg = BudgetEd()
         dlg.dialog.exec()
+        print(self.model.rowCount())
         self.model.query().exec_()
+        self.model.setQuery(self.model.query()) # Why I need to this?
 
     def act_ed(self):
         row = self.list.selectedIndexes()[0].row()
@@ -141,7 +147,7 @@ class BudgetList:
         id_ = self.model.data(idx)
         dlg = BudgetEd(id_)
         dlg.dialog.exec()
-        self.model.query().exec_()
+        self.model.query().exec_() # or why I works without setting the query again?
 
     def configure_list(self):
         self.list.hideColumn(0)
