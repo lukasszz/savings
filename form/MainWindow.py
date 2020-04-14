@@ -1,5 +1,6 @@
 import PySide2
-from PySide2.QtCore import qInstallMessageHandler
+import typing
+from PySide2.QtCore import qInstallMessageHandler, Qt
 from PySide2.QtSql import QSqlTableModel, QSqlDatabase, QSqlQueryModel
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
@@ -65,6 +66,14 @@ class MainWindow:
         self.budget_table.model.setQuery(self.budget_table.model.query())
         self.asset_table.model.query().exec_()
         self.budget_table.model.query().exec_()
+
+
+# class TableModel(QSqlQueryModel):
+#
+#     def data(self, item: PySide2.QtCore.QModelIndex, role: int = ...) -> typing.Any:
+#         if role == Qt.DisplayRole:
+#             # value = self.data(item)
+            # return 'abc'
 
 
 class AssetTable:

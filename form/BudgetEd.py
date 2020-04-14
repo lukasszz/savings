@@ -1,9 +1,8 @@
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit, \
-    QComboBox
+from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit
 
 from db import Session
-from db.model import Asset, Budget
+from db.model import Budget
 
 
 class BudgetEd:
