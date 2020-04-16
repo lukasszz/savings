@@ -1,11 +1,16 @@
 import PySide2
 import typing
-from PySide2.QtCore import qInstallMessageHandler, Qt
+
+import sqlalchemy
+from PySide2.QtCore import qInstallMessageHandler, Qt, QAbstractTableModel
 from PySide2.QtSql import QSqlTableModel, QSqlDatabase, QSqlQueryModel
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
     QStyleOptionButton, QStyle, QAction
+from sqlalchemy import text
+from sqlalchemy.orm import session
 
+from db import Session
 from form.AssetEd import AssetEd
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
@@ -57,41 +62,71 @@ class MainWindow:
         if len(row) > 0:
             row = row[0].row()
             idx = self.asset_table.model.index(row, 0)
-            id_ = self.asset_table.model.data(idx)
+            id_ = self.asset_table.model.data(idx, )
             cidx = dlg.asset.findData(id_)
             dlg.asset.setCurrentIndex(cidx)
 
         dlg.dialog.exec()
-        self.asset_table.model.setQuery(self.asset_table.model.query())
-        self.budget_table.model.setQuery(self.budget_table.model.query())
-        self.asset_table.model.query().exec_()
-        self.budget_table.model.query().exec_()
+        self.asset_table.model.load_data()
+        self.budget_table.model.load_data()
 
 
-# class TableModel(QSqlQueryModel):
-#
-#     def data(self, item: PySide2.QtCore.QModelIndex, role: int = ...) -> typing.Any:
-#         if role == Qt.DisplayRole:
-#             # value = self.data(item)
-            # return 'abc'
+class TableModel(QAbstractTableModel):
+    sql: text
+
+    def __init__(self):
+        super().__init__()
+        self._data = []
+        self.sql = None
+
+    def set_sql(self, sql: str):
+        self.sql = text(sql)
+
+    def load_data(self):
+        sess: session = Session()
+        self._data = sess.execute(self.sql).fetchall()
+        self.layoutChanged.emit()
+
+    def set_data(self, data):
+        self._data = data
+
+    def data(self, index: PySide2.QtCore.QModelIndex, role: int = ...) -> typing.Any:
+        if role == Qt.DisplayRole:
+            # See below for the nested-list data structure.
+            # .row() indexes into the outer list,
+            # .column() indexes into the sub-list
+            return self._data[index.row()][index.column()]
+
+    def rowCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
+        return len(self._data)
+
+    def columnCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
+        # The following takes the first sub-list, and returns
+        # the length (only works if all rows are an equal length)
+        return len(self._data[0])
+
+    # def data(self, index:PySide2.QtCore.QModelIndex, role:int=...) -> typing.Any:
+    #     pass
 
 
 class AssetTable:
     def __init__(self, table: QTableView):
         # self.window = window
         self.table = table
-        self.model = QSqlQueryModel()
+        self.model = TableModel()
 
         self.build_model()
         self.build_menu()
         self.configure_list()
 
     def build_model(self):
-        self.model.setQuery("SELECT a.id, a.name, SUM(coalesce(s.amount, 0.00)) as amount\
+        self.model.set_sql("SELECT a.id, a.name, SUM(coalesce(s.amount, 0.00)) as amount\
                             FROM asset AS a\
                                 LEFT OUTER JOIN transaction_split as s ON s.id_asset = a.id\
                             GROUP BY a.id\
                             ORDER BY name")
+
+        self.model.load_data()
         self.table.setModel(self.model)
 
     def build_menu(self):
@@ -112,7 +147,7 @@ class AssetTable:
     def act_ed(self):
         row = self.table.selectedIndexes()[0].row()
         idx = self.model.index(row, 0)
-        id_ = self.model.data(idx)
+        id_ = self.model.data(idx, )
         dlg = AssetEd(id_)
         dlg.dialog.exec()
         self.model.query().exec_()  # or why I works without setting the query again?
@@ -123,30 +158,31 @@ class AssetTable:
 
 class BudgetList:
 
-    def __init__(self, list_: QTableView):
+    def __init__(self, table: QTableView):
         # self.window = window
-        self.list = list_
-        self.model = QSqlQueryModel()
+        self.table = table
+        self.model = TableModel()
 
         self.build_model()
         self.build_menu()
         self.configure_list()
 
     def build_model(self):
-        self.model.setQuery("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
+        self.model.set_sql("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
                             FROM budget AS b\
                                 LEFT OUTER JOIN transaction_split as s ON s.id_budget = b.id\
                             GROUP BY b.id\
                             ORDER BY name")
-        self.list.setModel(self.model)
+        self.model.load_data()
+        self.table.setModel(self.model)
 
     def build_menu(self):
-        act = QAction("New", self.list)
+        act = QAction("New", self.table)
         act.triggered.connect(self.act_new)
-        self.list.addAction(act)
-        act = QAction("Edit", self.list)
+        self.table.addAction(act)
+        act = QAction("Edit", self.table)
         act.triggered.connect(self.act_ed)
-        self.list.addAction(act)
+        self.table.addAction(act)
 
     def act_new(self):
         dlg = BudgetEd()
@@ -156,7 +192,7 @@ class BudgetList:
         self.model.setQuery(self.model.query())  # Why I need to this?
 
     def act_ed(self):
-        row = self.list.selectedIndexes()[0].row()
+        row = self.table.selectedIndexes()[0].row()
         idx = self.model.index(row, 0)
         id_ = self.model.data(idx)
         dlg = BudgetEd(id_)
@@ -164,4 +200,4 @@ class BudgetList:
         self.model.query().exec_()  # or why I works without setting the query again?
 
     def configure_list(self):
-        self.list.hideColumn(0)
+        self.table.hideColumn(0)
