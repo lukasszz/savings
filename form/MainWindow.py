@@ -1,9 +1,9 @@
-import PySide2
 import typing
 
-import sqlalchemy
+import PySide2
 from PySide2.QtCore import qInstallMessageHandler, Qt, QAbstractTableModel
-from PySide2.QtSql import QSqlTableModel, QSqlDatabase, QSqlQueryModel
+from PySide2.QtGui import QColor
+from PySide2.QtSql import QSqlTableModel, QSqlDatabase
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
     QStyleOptionButton, QStyle, QAction
@@ -92,18 +92,26 @@ class TableModel(QAbstractTableModel):
 
     def data(self, index: PySide2.QtCore.QModelIndex, role: int = ...) -> typing.Any:
         if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
             # See below for the nested-list data structure.
             # .row() indexes into the outer list,
             # .column() indexes into the sub-list
-            return self._data[index.row()][index.column()]
+            if isinstance(value, int) or isinstance(value, float):
+                # Render float to 2 dp
+                return "%.2f" % value
+            return value
         if role == Qt.UserRole:
             return self._data[index.row()][index.column()]
         if role == Qt.TextAlignmentRole:
             value = self._data[index.row()][index.column()]
-
             if isinstance(value, int) or isinstance(value, float):
                 # Align right, vertical middle.
-                return  int(Qt.AlignRight | Qt.AlignVCenter)
+                return int(Qt.AlignRight | Qt.AlignVCenter)
+        if role == Qt.TextColorRole:
+            value = self._data[index.row()][index.column()]
+            if isinstance(value, int) or isinstance(value, float):
+                if (value < 0):
+                    return QColor('red')
 
     def rowCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
         return len(self._data)

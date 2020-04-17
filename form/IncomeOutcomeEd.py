@@ -71,7 +71,7 @@ class IncomeOutcomeEd:
         m = self.bugets_table.model
         for idx in range(m.rowCount()):
             bud_id = m.item(idx, 0).data(0)
-            amount = Decimal(m.item(idx, 2).data(0))
+            amount = Decimal(m.item(idx, 2).data(0).replace(',','.'))
             if amount == Decimal('0.00'):
                 continue
 
