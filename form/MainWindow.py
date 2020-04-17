@@ -15,7 +15,7 @@ from db import Session
 from form.AssetEd import AssetEd
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
-from form.IncomeOutcomeEd import IncomeOutcomeEd
+from form.TransferIncomeOutcomeEd import TransferIncomeOutcomeEd
 from form.TransferBudgetEd import TransferBudgetEd
 
 
@@ -49,7 +49,7 @@ class MainWindow:
             print("Cannot open the database")
             exit(1)
 
-        self.window = QUiLoader().load("form/mainwindow.ui")
+        self.window = QUiLoader().load("form/MainWindow.ui")
         # self.setup_asset_list()
         self.budget_table = BudgetList(self.window.findChild(QTableView, 'budget_list'))
         self.asset_table = AssetTable(self.window.findChild(QTableView, 'asset_list'))
@@ -74,7 +74,7 @@ class MainWindow:
         self.budget_table.model.load_data()
 
     def action_income_outcome_new(self):
-        dlg = IncomeOutcomeEd()
+        dlg = TransferIncomeOutcomeEd()
 
         row = self.asset_table.table.selectedIndexes()
         if len(row) > 0:

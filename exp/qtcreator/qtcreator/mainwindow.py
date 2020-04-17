@@ -27,7 +27,7 @@ def bank_klik():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    ui_file = QFile("mainwindow.ui")
+    ui_file = QFile("MainWindow.ui")
     ui_file.open(QFile.ReadOnly)
 
     loader = QUiLoader()

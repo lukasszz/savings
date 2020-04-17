@@ -48,13 +48,13 @@ class BudgetTable:
             self.model.appendRow([id, name, amount])
 
 
-class IncomeOutcomeEd:
+class TransferIncomeOutcomeEd:
     dialog: QDialog
 
     def __init__(self, obj_id=None):
 
         self.obj_id = obj_id
-        self.dialog = QUiLoader().load("form/income_outcome_ed.ui")
+        self.dialog = QUiLoader().load("form/TransferIncomeOutcomeEd.ui")
         self.bugets_table: BudgetTable = BudgetTable(self.dialog.findChild(QTableView, 'budget_table'))
         self.asset: QComboBox = self.dialog.findChild(QComboBox, 'asset')
         self.sum_: QLineEdit = self.dialog.findChild(QLineEdit, 'sum')

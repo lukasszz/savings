@@ -12,7 +12,7 @@ class AssetEd:
     def __init__(self, obj_id=None):
         super().__init__()
         self.obj_id = obj_id
-        self.dialog = QUiLoader().load("form/asset_ed.ui")
+        self.dialog = QUiLoader().load("form/AssetEd.ui")
         self.name: QLineEdit = self.dialog.findChild(QLineEdit, 'name')
         self.active: QCheckBox = self.dialog.findChild(QCheckBox, 'active')
         self.currency: QComboBox = self.dialog.findChild(QComboBox, 'currency')
