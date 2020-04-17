@@ -53,8 +53,9 @@ class MainWindow:
         self.budget_table = BudgetList(self.window.findChild(QTableView, 'budget_list'))
         self.asset_table = AssetTable(self.window.findChild(QTableView, 'asset_list'))
         self.io_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
-        self.io_new.clicked.connect(
-            lambda: self.action_income_outcome_new())
+        self.io_new.clicked.connect(lambda: self.action_income_outcome_new())
+
+        self.asset_table.table.doubleClicked.connect(self.action_income_outcome_new)
 
     def action_income_outcome_new(self):
         dlg = IncomeOutcomeEd()
@@ -100,7 +101,7 @@ class TableModel(QAbstractTableModel):
             if isinstance(value, int) or isinstance(value, float):
                 # Render float to 2 dp
 
-                return locale.currency(value, grouping=True )
+                return locale.currency(value, grouping=True)
             return value
         if role == Qt.UserRole:
             return self._data[index.row()][index.column()]
@@ -148,10 +149,10 @@ class AssetTable:
         self.table.setModel(self.model)
 
     def build_menu(self):
-        act = QAction("New", self.table)
+        act = QAction("New asset", self.table)
         act.triggered.connect(self.act_new)
         self.table.addAction(act)
-        act = QAction("Edit", self.table)
+        act = QAction("Edit asset", self.table)
         act.triggered.connect(self.act_ed)
         self.table.addAction(act)
 
