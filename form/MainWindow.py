@@ -140,9 +140,7 @@ class AssetTable:
     def act_new(self):
         dlg = AssetEd()
         dlg.dialog.exec()
-        print(self.model.rowCount())
-        self.model.query().exec_()
-        self.model.setQuery(self.model.query())  # Why I need to this?
+        self.model.load_data()
 
     def act_ed(self):
         row = self.table.selectedIndexes()[0].row()
@@ -150,7 +148,7 @@ class AssetTable:
         id_ = self.model.data(idx, )
         dlg = AssetEd(id_)
         dlg.dialog.exec()
-        self.model.query().exec_()  # or why I works without setting the query again?
+        self.model.load_data()
 
     def configure_list(self):
         self.table.hideColumn(0)
@@ -187,9 +185,7 @@ class BudgetList:
     def act_new(self):
         dlg = BudgetEd()
         dlg.dialog.exec()
-        print(self.model.rowCount())
-        self.model.query().exec_()
-        self.model.setQuery(self.model.query())  # Why I need to this?
+        self.model.load_data()
 
     def act_ed(self):
         row = self.table.selectedIndexes()[0].row()
@@ -197,7 +193,7 @@ class BudgetList:
         id_ = self.model.data(idx)
         dlg = BudgetEd(id_)
         dlg.dialog.exec()
-        self.model.query().exec_()  # or why I works without setting the query again?
+        self.model.load_data()
 
     def configure_list(self):
         self.table.hideColumn(0)
