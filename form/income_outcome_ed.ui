@@ -22,10 +22,23 @@
     </widget>
    </item>
    <item>
+    <widget class="QLineEdit" name="desc">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Description&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhNone</set>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTableView" name="budget_table"/>
    </item>
    <item>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="sum">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -34,6 +47,9 @@
        <width>460</width>
        <height>0</height>
       </size>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhPreferNumbers</set>
      </property>
      <property name="text">
       <string>0,00</string>

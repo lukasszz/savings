@@ -1,10 +1,11 @@
 import locale
+from datetime import date
 from decimal import Decimal
 
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QStandardItemModel, QStandardItem
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QDialog, QTableView, QComboBox
+from PySide2.QtWidgets import QDialog, QTableView, QComboBox, QLineEdit
 
 from db import Session
 from db.model import Budget, Asset, Transaction, TransactionSplit
@@ -19,6 +20,19 @@ class BudgetTable:
         self.load_budgets_model()
         self.table.setModel(self.model)
         table.hideColumn(0)
+
+    def sum_amount(self):
+        m = self.model
+        sum_ = 0
+        for idx in range(m.rowCount()):
+            amount = m.item(idx, 2).data(0)
+            if '' == amount:
+                continue
+            amount = Decimal(amount.replace(',', '.'))
+            if amount == Decimal('0.00'):
+                continue
+            sum_ += amount
+        return sum_
 
     def load_budgets_model(self):
         session = Session()
@@ -43,6 +57,8 @@ class IncomeOutcomeEd:
         self.dialog = QUiLoader().load("form/income_outcome_ed.ui")
         self.bugets_table: BudgetTable = BudgetTable(self.dialog.findChild(QTableView, 'budget_table'))
         self.asset: QComboBox = self.dialog.findChild(QComboBox, 'asset')
+        self.sum_: QLineEdit = self.dialog.findChild(QLineEdit, 'sum')
+        self.desc: QLineEdit = self.dialog.findChild(QLineEdit, 'desc')
 
         self.load_asset_model()
 
@@ -52,6 +68,11 @@ class IncomeOutcomeEd:
             pass
 
         self.dialog.accepted.connect(self.accept)
+        self.bugets_table.model.dataChanged.connect(self.on_buget_data_changed)
+
+    def on_buget_data_changed(self):
+        amount = self.bugets_table.sum_amount()
+        self.sum_.setText(locale.currency(amount, grouping=True))
 
     def load_asset_model(self):
         session = Session()
@@ -69,13 +90,16 @@ class IncomeOutcomeEd:
 
     def accept(self):
         t = Transaction()
+        t.desc = self.desc.text()
+        t.active = True
+        t.date = date.today()
         m = self.bugets_table.model
         for idx in range(m.rowCount()):
             bud_id = m.item(idx, 0).data(0)
             amount = m.item(idx, 2).data(0)
             if '' == amount:
                 continue
-            amount = Decimal(amount.replace(',','.'))
+            amount = Decimal(amount.replace(',', '.'))
             if amount == Decimal('0.00'):
                 continue
 
