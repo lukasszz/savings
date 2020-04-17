@@ -1,9 +1,8 @@
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit, \
-    QComboBox
+from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit
 
 from db import Session
-from db.model import Asset, Budget
+from db.model import Budget
 
 
 class BudgetEd:
@@ -25,10 +24,8 @@ class BudgetEd:
             self.active.setChecked(True)
 
         self.dialog.accepted.connect(self.accept)
-        print('added acction')
 
     def accept(self):
-        print('enter acction')
         session = Session()
         if self.obj_id is not None:
             a: Budget = session.query(Budget).get(self.obj_id)

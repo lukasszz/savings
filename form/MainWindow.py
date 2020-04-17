@@ -1,14 +1,20 @@
+import typing
+
 import PySide2
-from PySide2.QtCore import qInstallMessageHandler
-from PySide2.QtSql import QSqlTableModel, QSqlDatabase, QSqlQueryModel
+from PySide2.QtCore import qInstallMessageHandler, Qt, QAbstractTableModel
+from PySide2.QtGui import QColor
+from PySide2.QtSql import QSqlTableModel, QSqlDatabase
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
     QStyleOptionButton, QStyle, QAction
+from sqlalchemy import text
+from sqlalchemy.orm import session
 
+from db import Session
 from form.AssetEd import AssetEd
-
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
+from form.IncomeOutcomeEd import IncomeOutcomeEd
 
 
 class CheckboxDelegate(QStyledItemDelegate):
@@ -35,98 +41,175 @@ class MainWindow:
 
     def __init__(self):
         super().__init__()
-        self.window = QUiLoader().load("form/mainwindow.ui")
-        self.setup_asset_list()
-        self.budget_list = BudgetList(self.window.findChild(QTableView, 'budget_list'))
-
-    def setup_asset_list(self):
         db = QSqlDatabase.addDatabase("QSQLITE")
         db.setDatabaseName("db.sqlite")
         if not db.open():
             print("Cannot open the database")
             exit(1)
 
-        self.asset_model = QSqlTableModel(db=db)
-        self.asset_model.setTable("asset")
-        self.asset_model.setEditStrategy(QSqlTableModel.OnFieldChange)
-        # model.setEditStrategy(QSqlTableModel.OnRowChange)
-        # model.setEditStrategy(QSqlTableModel.OnManualSubmit)
-        self.asset_model.select()
+        self.window = QUiLoader().load("form/mainwindow.ui")
+        # self.setup_asset_list()
+        self.budget_table = BudgetList(self.window.findChild(QTableView, 'budget_list'))
+        self.asset_table = AssetTable(self.window.findChild(QTableView, 'asset_list'))
+        self.io_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
+        self.io_new.clicked.connect(
+            lambda: self.action_income_outcome_new())
 
-        # noinspection PyTypeChecker
-        self.asset_list: QTableView = self.window.findChild(QTableView, 'asset_list')
-        self.asset_list.setModel(self.asset_model)
-        self.asset_list.setSelectionBehavior(PySide2.QtWidgets.QAbstractItemView.SelectRows)
-        self.asset_list.hideColumn(0)
-        self.asset_list.setItemDelegateForColumn(2, CheckboxDelegate())
+    def action_income_outcome_new(self):
+        dlg = IncomeOutcomeEd()
 
-        self.asset_new: QPushButton = self.window.findChild(QPushButton, 'asset_new')
-        self.asset_new.clicked.connect(
-            lambda: self.action_asset_new())
+        row = self.asset_table.table.selectedIndexes()
+        if len(row) > 0:
+            row = row[0].row()
+            idx = self.asset_table.model.index(row, 0)
+            id_ = self.asset_table.model.data(idx, Qt.UserRole)
+            cidx = dlg.asset.findData(id_)
+            dlg.asset.setCurrentIndex(cidx)
 
-        # https://wiki.python.org/moin/PyQt/Handling%20context%20menus
-        # Menu
-        new_act = QAction("New", self.window)
-        new_act.triggered.connect(self.action_asset_new)
-        self.asset_list.addAction(new_act)
-
-        sep = QAction(self.window)
-        sep.setSeparator(True)
-        self.asset_list.addAction(sep)
-
-        edit_act = QAction("Edit", self.window)
-        edit_act.triggered.connect(self.action_asset_ed)
-        self.asset_list.addAction(edit_act)
-
-    def action_asset_new(self):
-        dlg = AssetEd()
         dlg.dialog.exec()
-        self.asset_model.select()
-
-    def action_asset_ed(self):
-        row = self.asset_list.selectedIndexes()[0].row()
-        idx = self.asset_model.index(row, 0)
-        id_ = self.asset_model.data(idx)
-        dlg = AssetEd(id_)
-        dlg.dialog.exec()
-        self.asset_model.select()
+        self.asset_table.model.load_data()
+        self.budget_table.model.load_data()
 
 
-class BudgetList:
+class TableModel(QAbstractTableModel):
+    sql: text
 
-    def __init__(self, list_: QTableView):
+    def __init__(self):
+        super().__init__()
+        self._data = []
+        self.sql = None
+
+    def set_sql(self, sql: str):
+        self.sql = text(sql)
+
+    def load_data(self):
+        sess: session = Session()
+        self._data = sess.execute(self.sql).fetchall()
+        self.layoutChanged.emit()
+
+    def set_data(self, data):
+        self._data = data
+
+    def data(self, index: PySide2.QtCore.QModelIndex, role: int = ...) -> typing.Any:
+        if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
+            # See below for the nested-list data structure.
+            # .row() indexes into the outer list,
+            # .column() indexes into the sub-list
+            if isinstance(value, int) or isinstance(value, float):
+                # Render float to 2 dp
+                return "%.2f" % value
+            return value
+        if role == Qt.UserRole:
+            return self._data[index.row()][index.column()]
+        if role == Qt.TextAlignmentRole:
+            value = self._data[index.row()][index.column()]
+            if isinstance(value, int) or isinstance(value, float):
+                # Align right, vertical middle.
+                return int(Qt.AlignRight | Qt.AlignVCenter)
+        if role == Qt.TextColorRole:
+            value = self._data[index.row()][index.column()]
+            if isinstance(value, int) or isinstance(value, float):
+                if (value < 0):
+                    return QColor('red')
+
+    def rowCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
+        return len(self._data)
+
+    def columnCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
+        # The following takes the first sub-list, and returns
+        # the length (only works if all rows are an equal length)
+        return len(self._data[0])
+
+    # def data(self, index:PySide2.QtCore.QModelIndex, role:int=...) -> typing.Any:
+    #     pass
+
+
+class AssetTable:
+    def __init__(self, table: QTableView):
         # self.window = window
-        self.list = list_
-        self.model = QSqlQueryModel()
+        self.table = table
+        self.model = TableModel()
 
         self.build_model()
         self.build_menu()
         self.configure_list()
 
     def build_model(self):
-        self.model.setQuery("SELECT id, name FROM budget ORDER BY name")
-        self.list.setModel(self.model)
+        self.model.set_sql("SELECT a.id, a.name, SUM(coalesce(s.amount, 0.00)) as amount\
+                            FROM asset AS a\
+                                LEFT OUTER JOIN transaction_split as s ON s.id_asset = a.id\
+                            GROUP BY a.id\
+                            ORDER BY name")
+
+        self.model.load_data()
+        self.table.setModel(self.model)
 
     def build_menu(self):
-        act = QAction("New", self.list)
+        act = QAction("New", self.table)
         act.triggered.connect(self.act_new)
-        self.list.addAction(act)
-        act = QAction("Edit", self.list)
+        self.table.addAction(act)
+        act = QAction("Edit", self.table)
         act.triggered.connect(self.act_ed)
-        self.list.addAction(act)
+        self.table.addAction(act)
+
+    def act_new(self):
+        dlg = AssetEd()
+        dlg.dialog.exec()
+        self.model.load_data()
+
+    def act_ed(self):
+        row = self.table.selectedIndexes()[0].row()
+        idx = self.model.index(row, 0)
+        id_ = self.model.data(idx, )
+        dlg = AssetEd(id_)
+        dlg.dialog.exec()
+        self.model.load_data()
+
+    def configure_list(self):
+        self.table.hideColumn(0)
+
+
+class BudgetList:
+
+    def __init__(self, table: QTableView):
+        # self.window = window
+        self.table = table
+        self.model = TableModel()
+
+        self.build_model()
+        self.build_menu()
+        self.configure_list()
+
+    def build_model(self):
+        self.model.set_sql("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
+                            FROM budget AS b\
+                                LEFT OUTER JOIN transaction_split as s ON s.id_budget = b.id\
+                            GROUP BY b.id\
+                            ORDER BY name")
+        self.model.load_data()
+        self.table.setModel(self.model)
+
+    def build_menu(self):
+        act = QAction("New", self.table)
+        act.triggered.connect(self.act_new)
+        self.table.addAction(act)
+        act = QAction("Edit", self.table)
+        act.triggered.connect(self.act_ed)
+        self.table.addAction(act)
 
     def act_new(self):
         dlg = BudgetEd()
         dlg.dialog.exec()
-        self.model.query().exec_()
+        self.model.load_data()
 
     def act_ed(self):
-        row = self.list.selectedIndexes()[0].row()
+        row = self.table.selectedIndexes()[0].row()
         idx = self.model.index(row, 0)
         id_ = self.model.data(idx)
         dlg = BudgetEd(id_)
         dlg.dialog.exec()
-        self.model.query().exec_()
+        self.model.load_data()
 
     def configure_list(self):
-        self.list.hideColumn(0)
+        self.table.hideColumn(0)

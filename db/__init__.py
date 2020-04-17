@@ -23,10 +23,10 @@ session.query(Bank).all()
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, session
 
 Base = declarative_base()
 
 engine = create_engine('sqlite:///db.sqlite', echo=True)
 
-Session = sessionmaker(bind=engine)
+Session: session = sessionmaker(bind=engine)

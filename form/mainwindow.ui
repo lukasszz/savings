@@ -62,9 +62,9 @@
          <widget class="QComboBox" name="comboBox_2"/>
         </item>
         <item>
-         <widget class="QPushButton" name="asset_new">
+         <widget class="QPushButton" name="io_new">
           <property name="text">
-           <string>New</string>
+           <string>Income/Outcome</string>
           </property>
          </widget>
         </item>
