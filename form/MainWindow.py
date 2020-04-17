@@ -16,6 +16,7 @@ from form.AssetEd import AssetEd
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
 from form.IncomeOutcomeEd import IncomeOutcomeEd
+from form.TransferBudgetEd import TransferBudgetEd
 
 
 class CheckboxDelegate(QStyledItemDelegate):
@@ -56,6 +57,21 @@ class MainWindow:
         self.io_new.clicked.connect(lambda: self.action_income_outcome_new())
 
         self.asset_table.table.doubleClicked.connect(self.action_income_outcome_new)
+        self.budget_table.table.doubleClicked.connect(self.act_budget_transfer)
+
+    def act_budget_transfer(self):
+        dlg = TransferBudgetEd()
+
+        row = self.budget_table.table.selectedIndexes()
+        if len(row) > 0:
+            row = row[0].row()
+            idx = self.budget_table.model.index(row, 0)
+            id_ = self.budget_table.model.data(idx, Qt.UserRole)
+            cidx = dlg.from_.findData(id_)
+            dlg.from_.setCurrentIndex(cidx)
+
+        dlg.dialog.exec()
+        self.budget_table.model.load_data()
 
     def action_income_outcome_new(self):
         dlg = IncomeOutcomeEd()
