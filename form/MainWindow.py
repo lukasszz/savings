@@ -62,7 +62,7 @@ class MainWindow:
         if len(row) > 0:
             row = row[0].row()
             idx = self.asset_table.model.index(row, 0)
-            id_ = self.asset_table.model.data(idx, )
+            id_ = self.asset_table.model.data(idx, Qt.UserRole)
             cidx = dlg.asset.findData(id_)
             dlg.asset.setCurrentIndex(cidx)
 
@@ -95,6 +95,8 @@ class TableModel(QAbstractTableModel):
             # See below for the nested-list data structure.
             # .row() indexes into the outer list,
             # .column() indexes into the sub-list
+            return self._data[index.row()][index.column()]
+        if role == Qt.UserRole:
             return self._data[index.row()][index.column()]
         if role == Qt.TextAlignmentRole:
             value = self._data[index.row()][index.column()]
