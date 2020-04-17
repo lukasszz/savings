@@ -1,3 +1,4 @@
+import locale
 import typing
 
 import PySide2
@@ -98,7 +99,8 @@ class TableModel(QAbstractTableModel):
             # .column() indexes into the sub-list
             if isinstance(value, int) or isinstance(value, float):
                 # Render float to 2 dp
-                return "%.2f" % value
+
+                return locale.currency(value, grouping=True )
             return value
         if role == Qt.UserRole:
             return self._data[index.row()][index.column()]

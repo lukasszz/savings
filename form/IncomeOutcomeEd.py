@@ -1,3 +1,4 @@
+import locale
 from decimal import Decimal
 
 from PySide2.QtCore import Qt
@@ -28,7 +29,7 @@ class BudgetTable:
             id.setEditable(False)
             name = QStandardItem(b.name)
             name.setEditable(False)
-            amount = QStandardItem('0.00')
+            amount = QStandardItem('')
             amount.setTextAlignment(Qt.AlignRight)
             self.model.appendRow([id, name, amount])
 
@@ -71,7 +72,10 @@ class IncomeOutcomeEd:
         m = self.bugets_table.model
         for idx in range(m.rowCount()):
             bud_id = m.item(idx, 0).data(0)
-            amount = Decimal(m.item(idx, 2).data(0).replace(',','.'))
+            amount = m.item(idx, 2).data(0)
+            if '' == amount:
+                continue
+            amount = Decimal(amount.replace(',','.'))
             if amount == Decimal('0.00'):
                 continue
 
