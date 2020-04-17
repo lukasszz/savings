@@ -96,6 +96,12 @@ class TableModel(QAbstractTableModel):
             # .row() indexes into the outer list,
             # .column() indexes into the sub-list
             return self._data[index.row()][index.column()]
+        if role == Qt.TextAlignmentRole:
+            value = self._data[index.row()][index.column()]
+
+            if isinstance(value, int) or isinstance(value, float):
+                # Align right, vertical middle.
+                return  int(Qt.AlignRight | Qt.AlignVCenter)
 
     def rowCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
         return len(self._data)
