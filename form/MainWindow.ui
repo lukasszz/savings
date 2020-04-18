@@ -99,7 +99,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QDateEdit" name="fromDate">
+           <widget class="QDateEdit" name="dateFrom">
             <property name="calendarPopup">
              <bool>true</bool>
             </property>
