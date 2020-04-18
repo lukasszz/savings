@@ -1,5 +1,6 @@
 from PySide2.QtWidgets import QMainWindow, QTableView, QComboBox
 
+from form import asset, budget
 from ui.TableModel import TableModel
 
 
@@ -12,6 +13,10 @@ class MainWindowTrans:
 
         self.trans_table: QTableView = self.window.findChild(QTableView, 'trans_table')
         self.budget: QComboBox = self.window.findChild(QComboBox, 'budget')
+        self.asset: QComboBox = self.window.findChild(QComboBox, 'asset')
+
+        self.asset.setModel(asset.get_model(with_empty=True))
+        self.budget.setModel(budget.get_model(with_empty=True))
 
         model = TableModel()
         model.set_sql("SELECT t.id, t.date, t.desc, SUM(s.amount) AS amount, "

@@ -7,6 +7,7 @@ from PySide2.QtWidgets import QDialog, QComboBox, QLineEdit
 
 from db import Session
 from db.model import Budget, Transaction, TransactionSplit
+from form import budget
 
 
 class TransferBudgetEd:
@@ -28,8 +29,8 @@ class TransferBudgetEd:
         else:
             pass
 
-        self.from_.setModel(get_budget_model())
-        self.to.setModel(get_budget_model())
+        self.from_.setModel(budget.get_model())
+        self.to.setModel(budget.get_model())
         self.dialog.accepted.connect(self.accept)
 
     def accept(self):
@@ -55,16 +56,3 @@ class TransferBudgetEd:
         session.commit()
 
 
-def get_budget_model():
-    session = Session()
-    assets = session.query(Budget).filter(True == Budget.active)
-
-    model = QStandardItemModel()
-    a: Budget
-    for a in assets:
-        item = QStandardItem()
-        item.setData(a.id, Qt.UserRole)
-        item.setData(a.name, Qt.DisplayRole)
-        model.appendRow(item)
-
-    return model
