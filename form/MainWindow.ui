@@ -99,13 +99,25 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QDateEdit" name="dateEdit"/>
+           <widget class="QDateEdit" name="fromDate">
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox_3"/>
+           <widget class="QComboBox" name="budget">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox_4"/>
+           <widget class="QComboBox" name="asset">
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLineEdit" name="lineEdit"/>

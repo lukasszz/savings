@@ -40,7 +40,7 @@ class MainWindow:
         super().__init__()
 
         self.window = QUiLoader().load("form/MainWindow.ui")
-        self.budget_table = BudgetList(self.window.findChild(QTableView, 'budget_list'))
+        self.budget_table = BudgetTable(self.window.findChild(QTableView, 'budget_list'))
         self.asset_table = AssetTable(self.window.findChild(QTableView, 'asset_list'))
         self.io_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
         self.io_new.clicked.connect(lambda: self.action_income_outcome_new())
@@ -125,7 +125,7 @@ class AssetTable:
         self.table.hideColumn(0)
 
 
-class BudgetList:
+class BudgetTable:
 
     def __init__(self, table: QTableView):
         # self.window = window
