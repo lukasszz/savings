@@ -110,15 +110,15 @@ class AssetTable:
 
     def act_new(self):
         dlg = AssetEd()
-        dlg.dialog.exec()
+        dlg.exec()
         self.model.load_data()
 
     def act_ed(self):
         row = self.table.selectedIndexes()[0].row()
         idx = self.model.index(row, 0)
-        id_ = self.model.data(idx, )
+        id_ = self.model.data(idx, Qt.UserRole)
         dlg = AssetEd(id_)
-        dlg.dialog.exec()
+        dlg.exec()
         self.model.load_data()
 
     def configure_list(self):
@@ -156,15 +156,15 @@ class BudgetTable:
 
     def act_new(self):
         dlg = BudgetEd()
-        dlg.dialog.exec()
+        dlg.exec()
         self.model.load_data()
 
     def act_ed(self):
         row = self.table.selectedIndexes()[0].row()
         idx = self.model.index(row, 0)
-        id_ = self.model.data(idx)
+        id_ = self.model.data(idx, Qt.UserRole)
         dlg = BudgetEd(id_)
-        dlg.dialog.exec()
+        dlg.exec()
         self.model.load_data()
 
     def configure_list(self):

@@ -4,18 +4,15 @@ from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit, \
 
 from db import Session
 from db.model import Asset
+from form.AssetEdUi import Ui_Dialog
 
 
-class AssetEd:
-    dialog: QDialog
+class AssetEd(QDialog, Ui_Dialog):
 
-    def __init__(self, obj_id=None):
-        super().__init__()
+    def __init__(self, obj_id=None, *args, **kwargs):
+        super(AssetEd, self).__init__(*args, **kwargs)
+        self.setupUi(self)
         self.obj_id = obj_id
-        self.dialog = QUiLoader().load("form/AssetEd.ui")
-        self.name: QLineEdit = self.dialog.findChild(QLineEdit, 'name')
-        self.active: QCheckBox = self.dialog.findChild(QCheckBox, 'active')
-        self.currency: QComboBox = self.dialog.findChild(QComboBox, 'currency')
 
         if self.obj_id is not None:
             session = Session()
@@ -26,7 +23,7 @@ class AssetEd:
         else:
             self.active.setChecked(True)
 
-        self.dialog.accepted.connect(self.accept)
+        self.accepted.connect(self.accept)
 
     def accept(self):
         session = Session()
@@ -41,3 +38,4 @@ class AssetEd:
 
         session.add(a)
         session.commit()
+        self.close()

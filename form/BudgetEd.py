@@ -3,17 +3,16 @@ from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit
 
 from db import Session
 from db.model import Budget
+from form.BudgetEdUi import Ui_Dialog
 
 
-class BudgetEd:
-    dialog: QDialog
+class BudgetEd(QDialog, Ui_Dialog):
 
-    def __init__(self, obj_id=None):
-        super().__init__()
+    def __init__(self, obj_id=None, *args, **kwargs):
+
+        super(BudgetEd, self).__init__(*args, **kwargs)
+        self.setupUi(self)
         self.obj_id = obj_id
-        self.dialog = QUiLoader().load("form/BudgetEd.ui")
-        self.name: QLineEdit = self.dialog.findChild(QLineEdit, 'name')
-        self.active: QCheckBox = self.dialog.findChild(QCheckBox, 'active')
 
         if self.obj_id is not None:
             session = Session()
@@ -23,7 +22,7 @@ class BudgetEd:
         else:
             self.active.setChecked(True)
 
-        self.dialog.accepted.connect(self.accept)
+        self.accepted.connect(self.accept)
 
     def accept(self):
         session = Session()
@@ -37,3 +36,5 @@ class BudgetEd:
 
         session.add(a)
         session.commit()
+
+        self.close()
