@@ -12,7 +12,7 @@ def get_model(with_empty=False):
 
     if with_empty:
         item = QStandardItem()
-        item.setData(-1, Qt.UserRole)
+        item.setData(None, Qt.UserRole)
         item.setData('', Qt.DisplayRole)
         model.appendRow(item)
 

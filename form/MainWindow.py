@@ -48,7 +48,7 @@ class MainWindow:
         self.asset_table.table.doubleClicked.connect(self.action_income_outcome_new)
         self.budget_table.table.doubleClicked.connect(self.act_budget_transfer)
 
-        transTab = MainWindowTrans(self.window)
+        self.transTab = MainWindowTrans(self.window)
 
     def act_budget_transfer(self):
         dlg = TransferBudgetEd()

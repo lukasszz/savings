@@ -1,5 +1,6 @@
 import locale
 import typing
+from decimal import Decimal
 from typing import Dict, Any
 
 import PySide2
@@ -26,13 +27,23 @@ class TableModel(QAbstractTableModel):
             self.column_style[index] = []
         self.column_style[index].append(style)
 
-    def set_sql(self, sql: str):
-        self.sql = text(sql)
+    def set_sql(self, sql):
+        if isinstance(sql, str):
+            sql = text(sql)
+        self._sql = sql
+        self.sql = sql
 
-    def load_data(self):
+    def load_data(self, limit=None, offset=None):
         sess: session = Session()
+
+        if limit:
+            self.sql = self.sql.limit(limit)
+            if offset:
+                self.sql = self.sql.offset(offset)
+
         self._data = sess.execute(self.sql).fetchall()
         self.layoutChanged.emit()
+        self.sql = self._sql
 
     def set_data(self, data):
         self._data = data
@@ -46,20 +57,21 @@ class TableModel(QAbstractTableModel):
             # .column() indexes into the sub-list
             if col in self.column_style:
                 if 'money' in self.column_style[index.column()] \
-                        and isinstance(value, int) or isinstance(value, float):
+                        and isinstance(value, int) or isinstance(value, float) or isinstance(value, Decimal):
                     return locale.currency(value, grouping=True)
-
-            return value
+            if value is None:
+                return None
+            return str(value)
         if role == Qt.UserRole:
             return self._data[index.row()][index.column()]
         if role == Qt.TextAlignmentRole:
             value = self._data[index.row()][index.column()]
-            if isinstance(value, int) or isinstance(value, float):
+            if isinstance(value, int) or isinstance(value, float) or isinstance(value, Decimal):
                 # Align right, vertical middle.
                 return int(Qt.AlignRight | Qt.AlignVCenter)
         if role == Qt.TextColorRole:
             value = self._data[index.row()][index.column()]
-            if isinstance(value, int) or isinstance(value, float):
+            if isinstance(value, int) or isinstance(value, float) or isinstance(value, Decimal):
                 if (value < 0):
                     return QColor('red')
 
@@ -67,9 +79,9 @@ class TableModel(QAbstractTableModel):
         return len(self._data)
 
     def columnCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
-        # The following takes the first sub-list, and returns
-        # the length (only works if all rows are an equal length)
-        return len(self._data[0])
+        if len(self._data):
+            return len(self._data[0])
+        return 0
 
     # def data(self, index:PySide2.QtCore.QModelIndex, role:int=...) -> typing.Any:
     #     pass
