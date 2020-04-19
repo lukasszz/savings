@@ -9,6 +9,7 @@ from PySide2.QtWidgets import QDialog, QTableView, QComboBox, QLineEdit
 
 from db import Session
 from db.model import Budget, Asset, Transaction, TransactionSplit
+from form import asset
 
 
 class BudgetTable:
@@ -60,7 +61,7 @@ class TransferIncomeOutcomeEd:
         self.sum_: QLineEdit = self.dialog.findChild(QLineEdit, 'sum')
         self.desc: QLineEdit = self.dialog.findChild(QLineEdit, 'desc')
 
-        self.load_asset_model()
+        self.asset.setModel(asset.get_model())
 
         if self.obj_id is not None:
             pass
@@ -74,19 +75,7 @@ class TransferIncomeOutcomeEd:
         amount = self.bugets_table.sum_amount()
         self.sum_.setText(locale.currency(amount, grouping=True))
 
-    def load_asset_model(self):
-        session = Session()
-        assets = session.query(Asset).filter(True == Asset.active)
 
-        model = QStandardItemModel()
-        a: Asset
-        for a in assets:
-            item = QStandardItem()
-            item.setData(a.id, Qt.UserRole)
-            item.setData(a.name, Qt.DisplayRole)
-            model.appendRow(item)
-
-        self.asset.setModel(model)
 
     def accept(self):
         t = Transaction()

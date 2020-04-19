@@ -1,22 +1,17 @@
-import locale
-import typing
-
 import PySide2
-from PySide2.QtCore import qInstallMessageHandler, Qt, QAbstractTableModel
-from PySide2.QtGui import QColor
-from PySide2.QtSql import QSqlTableModel, QSqlDatabase
+from PySide2.QtCore import qInstallMessageHandler, Qt
+from PySide2.QtSql import QSqlTableModel
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
     QStyleOptionButton, QStyle, QAction
-from sqlalchemy import text
-from sqlalchemy.orm import session
 
-from db import Session
 from form.AssetEd import AssetEd
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
+from form.MainWindowTrans import MainWindowTrans
 from form.TransferIncomeOutcomeEd import TransferIncomeOutcomeEd
 from form.TransferBudgetEd import TransferBudgetEd
+from ui.TableModel import TableModel
 
 
 class CheckboxDelegate(QStyledItemDelegate):
@@ -43,21 +38,17 @@ class MainWindow:
 
     def __init__(self):
         super().__init__()
-        db = QSqlDatabase.addDatabase("QSQLITE")
-        db.setDatabaseName("db.sqlite")
-        if not db.open():
-            print("Cannot open the database")
-            exit(1)
 
         self.window = QUiLoader().load("form/MainWindow.ui")
-        # self.setup_asset_list()
-        self.budget_table = BudgetList(self.window.findChild(QTableView, 'budget_list'))
+        self.budget_table = BudgetTable(self.window.findChild(QTableView, 'budget_list'))
         self.asset_table = AssetTable(self.window.findChild(QTableView, 'asset_list'))
         self.io_new: QPushButton = self.window.findChild(QPushButton, 'io_new')
         self.io_new.clicked.connect(lambda: self.action_income_outcome_new())
 
         self.asset_table.table.doubleClicked.connect(self.action_income_outcome_new)
         self.budget_table.table.doubleClicked.connect(self.act_budget_transfer)
+
+        self.transTab = MainWindowTrans(self.window)
 
     def act_budget_transfer(self):
         dlg = TransferBudgetEd()
@@ -89,61 +80,6 @@ class MainWindow:
         self.budget_table.model.load_data()
 
 
-class TableModel(QAbstractTableModel):
-    sql: text
-
-    def __init__(self):
-        super().__init__()
-        self._data = []
-        self.sql = None
-
-    def set_sql(self, sql: str):
-        self.sql = text(sql)
-
-    def load_data(self):
-        sess: session = Session()
-        self._data = sess.execute(self.sql).fetchall()
-        self.layoutChanged.emit()
-
-    def set_data(self, data):
-        self._data = data
-
-    def data(self, index: PySide2.QtCore.QModelIndex, role: int = ...) -> typing.Any:
-        if role == Qt.DisplayRole:
-            value = self._data[index.row()][index.column()]
-            # See below for the nested-list data structure.
-            # .row() indexes into the outer list,
-            # .column() indexes into the sub-list
-            if isinstance(value, int) or isinstance(value, float):
-                # Render float to 2 dp
-
-                return locale.currency(value, grouping=True)
-            return value
-        if role == Qt.UserRole:
-            return self._data[index.row()][index.column()]
-        if role == Qt.TextAlignmentRole:
-            value = self._data[index.row()][index.column()]
-            if isinstance(value, int) or isinstance(value, float):
-                # Align right, vertical middle.
-                return int(Qt.AlignRight | Qt.AlignVCenter)
-        if role == Qt.TextColorRole:
-            value = self._data[index.row()][index.column()]
-            if isinstance(value, int) or isinstance(value, float):
-                if (value < 0):
-                    return QColor('red')
-
-    def rowCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
-        return len(self._data)
-
-    def columnCount(self, parent: PySide2.QtCore.QModelIndex = ...) -> int:
-        # The following takes the first sub-list, and returns
-        # the length (only works if all rows are an equal length)
-        return len(self._data[0])
-
-    # def data(self, index:PySide2.QtCore.QModelIndex, role:int=...) -> typing.Any:
-    #     pass
-
-
 class AssetTable:
     def __init__(self, table: QTableView):
         # self.window = window
@@ -160,7 +96,7 @@ class AssetTable:
                                 LEFT OUTER JOIN transaction_split as s ON s.id_asset = a.id\
                             GROUP BY a.id\
                             ORDER BY name")
-
+        self.model.add_column_style(2, 'money')
         self.model.load_data()
         self.table.setModel(self.model)
 
@@ -189,7 +125,7 @@ class AssetTable:
         self.table.hideColumn(0)
 
 
-class BudgetList:
+class BudgetTable:
 
     def __init__(self, table: QTableView):
         # self.window = window
@@ -207,6 +143,7 @@ class BudgetList:
                             GROUP BY b.id\
                             ORDER BY name")
         self.model.load_data()
+        self.model.add_column_style(2, 'money')
         self.table.setModel(self.model)
 
     def build_menu(self):
