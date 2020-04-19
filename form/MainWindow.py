@@ -75,7 +75,7 @@ class MainWindow:
             cidx = dlg.asset.findData(id_)
             dlg.asset.setCurrentIndex(cidx)
 
-        dlg.dialog.exec()
+        dlg.exec()
         self.asset_table.model.load_data()
         self.budget_table.model.load_data()
 
