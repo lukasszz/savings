@@ -61,7 +61,7 @@ class MainWindow:
             cidx = dlg.from_.findData(id_)
             dlg.from_.setCurrentIndex(cidx)
 
-        dlg.dialog.exec()
+        dlg.exec()
         self.budget_table.model.load_data()
 
     def action_income_outcome_new(self):
