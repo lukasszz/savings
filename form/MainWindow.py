@@ -3,8 +3,7 @@ from datetime import date
 import PySide2
 from PySide2.QtCore import qInstallMessageHandler, Qt
 from PySide2.QtSql import QSqlTableModel
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QTableView, QPushButton, QCheckBox, QMainWindow, QStyledItemDelegate, \
+from PySide2.QtWidgets import QApplication, QCheckBox, QMainWindow, QStyledItemDelegate, \
     QStyleOptionButton, QStyle, QAction
 from sqlalchemy import func, select, text
 
@@ -14,8 +13,8 @@ from form.AssetEd import AssetEd
 # // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
 from form.MainWindowUi import Ui_MainWindow
-from form.TransferIncomeOutcomeEd import TransferIncomeOutcomeEd
 from form.TransferBudgetEd import TransferBudgetEd
+from form.TransferIncomeOutcomeEd import TransferIncomeOutcomeEd
 from ui.TableModel import TableModel
 
 
@@ -46,7 +45,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.setup_asset_table()
-        BudgetTable(self.budget_table)
+        self.setup_budget_table()
         self.io_new.clicked.connect(lambda: self.action_income_outcome_new())
 
         self.asset_table.doubleClicked.connect(self.action_income_outcome_new)
@@ -57,16 +56,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def act_budget_transfer(self):
         dlg = TransferBudgetEd()
 
-        row = self.budget_table.table.selectedIndexes()
+        row = self.budget_table.selectedIndexes()
         if len(row) > 0:
             row = row[0].row()
-            idx = self.budget_table.model.index(row, 0)
-            id_ = self.budget_table.model.data(idx, Qt.UserRole)
+            idx = self.budget_table.model().index(row, 0)
+            id_ = self.budget_table.model().data(idx, Qt.UserRole)
             cidx = dlg.from_.findData(id_)
             dlg.from_.setCurrentIndex(cidx)
 
         dlg.exec()
-        self.budget_table.model.load_data()
+        self.budget_table.model().load_data()
 
     def action_income_outcome_new(self):
         dlg = TransferIncomeOutcomeEd()
@@ -139,7 +138,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def setup_asset_table(self):
 
-
         model = TableModel()
         model.set_sql("SELECT a.id, a.name, SUM(coalesce(s.amount, 0.00)) as amount\
                             FROM asset AS a\
@@ -173,51 +171,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dlg.exec()
         self.asset_table.model().load_data()
 
-
-
-
-
-class BudgetTable:
-
-    def __init__(self, table: QTableView):
-        # self.window = window
-        self.table = table
-        self.model = TableModel()
-
-        self.build_model()
-        self.build_menu()
-        self.configure_list()
-
-    def build_model(self):
-        self.model.set_sql("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
+    def setup_budget_table(self):
+        model = TableModel()
+        model.set_sql("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
                             FROM budget AS b\
                                 LEFT OUTER JOIN transaction_split as s ON s.id_budget = b.id\
                             GROUP BY b.id\
                             ORDER BY name")
-        self.model.load_data()
-        self.model.add_column_style(2, 'money')
-        self.table.setModel(self.model)
+        model.load_data()
+        model.add_column_style(2, 'money')
+        self.budget_table.setModel(model)
 
-    def build_menu(self):
-        act = QAction("New", self.table)
-        act.triggered.connect(self.act_new)
-        self.table.addAction(act)
-        act = QAction("Edit", self.table)
-        act.triggered.connect(self.act_ed)
-        self.table.addAction(act)
+        self.budget_table.hideColumn(0)
+        # Menu
+        act = QAction("New budget", self.budget_table)
+        act.triggered.connect(self.act_budget_new)
+        self.budget_table.addAction(act)
+        act = QAction("Edit budget", self.budget_table)
+        act.triggered.connect(self.act_budget_ed)
+        self.budget_table.addAction(act)
 
-    def act_new(self):
+    def act_budget_new(self):
         dlg = BudgetEd()
         dlg.exec()
-        self.model.load_data()
+        self.budget_table.model().load_data()
 
-    def act_ed(self):
-        row = self.table.selectedIndexes()[0].row()
-        idx = self.model.index(row, 0)
-        id_ = self.model.data(idx, Qt.UserRole)
+    def act_budget_ed(self):
+        row = self.budget_table.selectedIndexes()[0].row()
+        idx = self.budget_table.model().index(row, 0)
+        id_ = self.budget_table.model().data(idx, Qt.UserRole)
         dlg = BudgetEd(id_)
         dlg.exec()
-        self.model.load_data()
-
-    def configure_list(self):
-        self.table.hideColumn(0)
+        self.budget_table.model().load_data()
