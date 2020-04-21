@@ -92,7 +92,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         t = Transaction
         s = TransactionSplit
         s = select(
-            [t.id, t.date, t.desc, func.sum(s.amount), func.group_concat(Budget.name), func.group_concat(Asset.name),
+            [t.id, t.date,
+             text("group_concat(DISTINCT CASE "
+                  "  WHEN amount>0 THEN asset.name "
+                  "END)"),
+             text("group_concat(DISTINCT CASE "
+                  "  WHEN amount>0 THEN budget.name "
+                  "END)"),
+             text("SUM(CASE"
+                  "  WHEN amount>0 THEN amount "
+                  "  ELSE NULL "
+                  "END) AS income "),
+             text("SUM(CASE"
+                  "  WHEN amount<0 THEN amount "
+                  "  ELSE NULL "
+                  " END) AS outcome "),
+             text("group_concat(DISTINCT CASE "
+                  "  WHEN amount<0 THEN budget.name "
+                  "END)"),
+             text("group_concat(DISTINCT CASE "
+                  "  WHEN amount<0 THEN asset.name "
+                  "END)"),
+             t.desc,
              text("  CASE "
                   "    WHEN group_concat(asset.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'b>b' "
                   "    WHEN group_concat(budget.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'a>a' "
@@ -106,7 +127,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             order_by(t.date.desc(), t.id.desc())
         model.set_sql(s)
 
-        model.add_column_style(3, 'money')
+        model.add_column_style(4, 'money')
+        model.add_column_style(5, 'money')
         model.load_data(10)
         self.trans_table.setModel(model)
         self.trans_table.hideColumn(0)
