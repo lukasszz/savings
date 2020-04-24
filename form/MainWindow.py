@@ -140,6 +140,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         t = session.query(Transaction).filter(Transaction.id == id_).delete()
         session.commit()
         self.act_filter()
+        self.asset_table.model().load_data()
+        self.budget_table.model().load_data()
 
     def setup_asset_table(self):
 

@@ -43,7 +43,7 @@ class TransactionSplit(Base):
     id = Column(Integer, primary_key=True)
     amount = Column(Numeric(12, 2))
     desc = Column(String)
-    id_transaction = Column(Integer, ForeignKey("transaction.id"), nullable=False)
+    id_transaction = Column(Integer, ForeignKey("transaction.id", onupdate="CASCADE", ondelete="CASCADE", use_alter=True), nullable=False)
     id_asset = Column(Integer, ForeignKey("asset.id"), nullable=True)
     id_budget = Column(Integer, ForeignKey("budget.id"), nullable=True)
 

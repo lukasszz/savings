@@ -25,8 +25,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, session
 
+from sqlalchemy.interfaces import PoolListener
+class ForeignKeysListener(PoolListener):
+    def connect(self, dbapi_con, con_record):
+        db_cursor = dbapi_con.execute('pragma foreign_keys=ON')
+
+
 Base = declarative_base()
 
-engine = create_engine('sqlite:///db.sqlite', echo=True)
+engine = create_engine('sqlite:///db.sqlite', echo=True,  listeners=[ForeignKeysListener()])
 
 Session: session = sessionmaker(bind=engine)
