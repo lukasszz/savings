@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'form/MainWindow.ui',
 # licensing of 'form/MainWindow.ui' applies.
 #
-# Created: Fri Apr 24 18:28:22 2020
+# Created: Fri Apr 24 18:47:04 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1274, 657)
+        MainWindow.resize(1274, 695)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -68,6 +68,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.search)
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
         self.trans_table = QtWidgets.QTableView(self.centralwidget)
+        self.trans_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.trans_table.setSortingEnabled(True)
         self.trans_table.setObjectName("trans_table")
         self.verticalLayout_3.addWidget(self.trans_table)
@@ -102,9 +103,12 @@ class Ui_MainWindow(object):
         self.t_ed_splits.setObjectName("t_ed_splits")
         self.verticalLayout_4.addWidget(self.t_ed_splits)
         self.verticalLayout_3.addLayout(self.verticalLayout_4)
-        self.verticalLayout_3.setStretch(2, 2)
-        self.verticalLayout_3.setStretch(4, 1)
+        self.verticalLayout_3.setStretch(2, 3)
+        self.verticalLayout_3.setStretch(4, 3)
         self.horizontalLayout_6.addLayout(self.verticalLayout_3)
+        self.horizontalLayout_6.setStretch(0, 1)
+        self.horizontalLayout_6.setStretch(1, 1)
+        self.horizontalLayout_6.setStretch(2, 2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1274, 29))

@@ -1,40 +1,19 @@
 from datetime import date
 
-import PySide2
-from PySide2.QtCore import qInstallMessageHandler, Qt
+from PySide2.QtCore import Qt
 from PySide2.QtSql import QSqlTableModel
-from PySide2.QtWidgets import QApplication, QCheckBox, QMainWindow, QStyledItemDelegate, \
-    QStyleOptionButton, QStyle, QAction
-from sqlalchemy import func, select, text
+from PySide2.QtWidgets import QMainWindow, QAction
+from sqlalchemy import func, select
 
 from db import Session
 from db.model import Transaction, TransactionSplit, Asset, Budget
 from form import asset, budget
 from form.AssetEd import AssetEd
-# // https://stackoverflow.com/questions/11800946/checkbox-and-itemdelegate-in-a-tableview
 from form.BudgetEd import BudgetEd
 from form.MainWindowUi import Ui_MainWindow
 from form.TransferBudgetEd import TransferBudgetEd
 from form.TransferIncomeOutcomeEd import TransferIncomeOutcomeEd
 from ui.TableModel import TableModel
-
-
-class CheckboxDelegate(QStyledItemDelegate):
-    def paint(self, painter, option, index):
-        value = index.data()
-
-        opt = QStyleOptionButton()
-        if value:
-            opt.state = QStyle.State_On
-        else:
-            opt.state = QStyle.State_Off
-        opt.rect = option.rect
-
-        QApplication.style().drawControl(QStyle.CE_CheckBox, opt, painter)
-
-    def createEditor(self, parent: PySide2.QtWidgets.QWidget, option: PySide2.QtWidgets.QStyleOptionViewItem,
-                     index: PySide2.QtCore.QModelIndex) -> PySide2.QtWidgets.QWidget:
-        return QCheckBox(parent)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -47,14 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.setup_asset_table()
         self.setup_budget_table()
-
-        self.asset_table.doubleClicked.connect(self.action_income_outcome_new)
-        self.asset_table.clicked.connect(self.act_set_asset_filter)
-
-        self.budget_table.doubleClicked.connect(self.act_budget_transfer)
-        self.budget_table.clicked.connect(self.act_set_budget_filter)
-
-        self.tab_trans()
+        self.setup_transfer_table()
 
     def act_set_asset_filter(self):
         id_ = self.get_selected_asset()
@@ -103,7 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.budget_table.model().load_data()
         self.act_filter()
 
-    def tab_trans(self):
+    def setup_transfer_table(self):
         self.dateFrom.setDate(date.today().replace(day=1))
 
         self.asset.setModel(asset.get_model(with_empty=True))
@@ -115,24 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         s = select(
             [t.id, t.date,
              t.desc,
-             # Asset.name,
-             # Budget.name,
              func.sum(s.amount)
-             # text("SUM(CASE"
-             #      "  WHEN amount>0 THEN amount "
-             #      "  ELSE NULL "
-             #      "END) AS income "),
-             # text("SUM(CASE"
-             #      "  WHEN amount<0 THEN amount "
-             #      "  ELSE NULL "
-             #      " END) AS outcome "),
-
-             # text("  CASE "
-             #      "    WHEN group_concat(asset.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'Budget transfer' "
-             #      "    WHEN group_concat(budget.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'Asset transfer' "
-             #      "    WHEN SUM(transaction_split.amount) > 0 THEN 'Income' "
-             #      "    WHEN SUM(transaction_split.amount) < 0 THEN 'Outcome' "
-             #      "  ELSE '' END AS type ")
              ]) \
             .select_from(Transaction.__table__.join(s).
                          join(Asset, isouter=True).
@@ -152,6 +107,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.dateFrom.dateChanged.connect(self.act_filter)
 
         self.trans_table.clicked.connect(self.act_show_document)
+
+        act = QAction("Delete", self.trans_table)
+        act.triggered.connect(self.act_tran_delete)
+        self.trans_table.addAction(act)
 
     def act_filter(self):
         model: TableModel = self.trans_table.model()
@@ -174,6 +133,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         model.sql = model.sql.where(Transaction.date >= fdateFrom)
 
         model.load_data()
+
+    def act_tran_delete(self):
+        id_ = self.get_selected_transaction()
+        session = Session()
+        t = session.query(Transaction).filter(Transaction.id == id_).delete()
+        session.commit()
+        self.act_filter()
 
     def setup_asset_table(self):
 
@@ -202,6 +168,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.asset_table.addAction(act)
 
         self.asset_table.hideColumn(0)
+
+        self.asset_table.doubleClicked.connect(self.action_income_outcome_new)
+        self.asset_table.clicked.connect(self.act_set_asset_filter)
 
     def act_asset_new(self):
         dlg = AssetEd()
@@ -249,7 +218,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         act.triggered.connect(self.act_budget_ed)
         self.budget_table.addAction(act)
 
-
+        self.budget_table.doubleClicked.connect(self.act_budget_transfer)
+        self.budget_table.clicked.connect(self.act_set_budget_filter)
 
     def act_budget_new(self):
         dlg = BudgetEd()
@@ -269,9 +239,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return id_
 
     def act_show_document(self):
-        row = self.trans_table.selectedIndexes()[0].row()
-        idx = self.trans_table.model().index(row, 0)
-        id_ = self.trans_table.model().data(idx, Qt.UserRole)
+        id_ = self.get_selected_transaction()
         session = Session()
         t = session.query(Transaction).get(id_)
         self.t_ed_id.setText(str(t.id))
@@ -285,10 +253,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
              Budget.name,
              s.amount
              ])
-            .select_from(TransactionSplit.__table__.
-                         join(Asset, isouter=True).
-                         join(Budget, isouter=True)). \
+                      .select_from(TransactionSplit.__table__.
+                                   join(Asset, isouter=True).
+                                   join(Budget, isouter=True)). \
                       where(s.id_transaction == t.id). \
-                order_by(Asset.name, Budget.name))
+                      order_by(Asset.name, Budget.name))
         model.load_data()
         self.t_ed_splits.setModel(model)
+
+    def get_selected_transaction(self):
+        row = self.trans_table.selectedIndexes()[0].row()
+        idx = self.trans_table.model().index(row, 0)
+        id_ = self.trans_table.model().data(idx, Qt.UserRole)
+        return id_

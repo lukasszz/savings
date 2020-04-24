@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1274</width>
-    <height>657</height>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Savings</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_6">
+   <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1,2">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -58,7 +58,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,2,0,1">
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,3,0,3">
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
@@ -96,6 +96,9 @@
       </item>
       <item>
        <widget class="QTableView" name="trans_table">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
