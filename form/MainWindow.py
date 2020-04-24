@@ -93,12 +93,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         s = TransactionSplit
         s = select(
             [t.id, t.date,
-             text("group_concat(DISTINCT CASE "
-                  "  WHEN amount>0 THEN asset.name "
-                  "END)"),
-             text("group_concat(DISTINCT CASE "
-                  "  WHEN amount>0 THEN budget.name "
-                  "END)"),
+             t.desc,
+             Asset.name,
+             Budget.name,
              text("SUM(CASE"
                   "  WHEN amount>0 THEN amount "
                   "  ELSE NULL "
@@ -107,31 +104,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                   "  WHEN amount<0 THEN amount "
                   "  ELSE NULL "
                   " END) AS outcome "),
-             text("group_concat(DISTINCT CASE "
-                  "  WHEN amount<0 THEN budget.name "
-                  "END)"),
-             text("group_concat(DISTINCT CASE "
-                  "  WHEN amount<0 THEN asset.name "
-                  "END)"),
-             t.desc,
-             text("  CASE "
-                  "    WHEN group_concat(asset.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'b>b' "
-                  "    WHEN group_concat(budget.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'a>a' "
-                  "    WHEN SUM(transaction_split.amount) > 0 THEN 'IN' "
-                  "    WHEN SUM(transaction_split.amount) < 0 THEN 'OUT' "
-                  "  ELSE '' END AS type ")]) \
+
+             # text("  CASE "
+             #      "    WHEN group_concat(asset.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'Budget transfer' "
+             #      "    WHEN group_concat(budget.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'Asset transfer' "
+             #      "    WHEN SUM(transaction_split.amount) > 0 THEN 'Income' "
+             #      "    WHEN SUM(transaction_split.amount) < 0 THEN 'Outcome' "
+             #      "  ELSE '' END AS type ")
+             ]) \
             .select_from(Transaction.__table__.join(s).
                          join(Asset, isouter=True).
                          join(Budget, isouter=True)). \
-            group_by(t.id). \
+            group_by(s.id). \
             order_by(t.date.desc(), t.id.desc())
         model.set_sql(s)
 
         model.add_column_style(4, 'money')
         model.add_column_style(5, 'money')
-        model.load_data(10)
+        model.load_data()
         self.trans_table.setModel(model)
-        self.trans_table.hideColumn(0)
+        # self.trans_table.hideColumn(0)
 
         self.asset.currentIndexChanged.connect(self.filter)
         self.budget.currentIndexChanged.connect(self.filter)
