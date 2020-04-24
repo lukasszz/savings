@@ -9,7 +9,7 @@ if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, '')
     app = QApplication(sys.argv)
 
-    w = MainWindow().window
+    w = MainWindow()
 
     w.show()
 

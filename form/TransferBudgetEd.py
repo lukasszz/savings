@@ -8,19 +8,15 @@ from PySide2.QtWidgets import QDialog, QComboBox, QLineEdit
 from db import Session
 from db.model import Budget, Transaction, TransactionSplit
 from form import budget
+from form.TransferBudgetEdUi import Ui_Dialog
 
 
-class TransferBudgetEd:
-    dialog: QDialog
+class TransferBudgetEd(QDialog, Ui_Dialog):
 
-    def __init__(self, obj_id=None):
-
+    def __init__(self, obj_id=None, *args, **kwargs):
+        super(TransferBudgetEd, self).__init__(*args, **kwargs)
+        self.setupUi(self)
         self.obj_id = obj_id
-        self.dialog = QUiLoader().load("form/TransferBudgetEd.ui")
-        self.from_: QComboBox = self.dialog.findChild(QComboBox, 'from')
-        self.to: QComboBox = self.dialog.findChild(QComboBox, 'to')
-        self.amount: QLineEdit = self.dialog.findChild(QLineEdit, 'amount')
-        self.desc: QLineEdit = self.dialog.findChild(QLineEdit, 'desc')
 
         self.amount.setFocus()
 
@@ -31,7 +27,7 @@ class TransferBudgetEd:
 
         self.from_.setModel(budget.get_model())
         self.to.setModel(budget.get_model())
-        self.dialog.accepted.connect(self.accept)
+        self.accepted.connect(self.accept)
 
     def accept(self):
         t = Transaction()
@@ -54,5 +50,7 @@ class TransferBudgetEd:
         session = Session()
         session.add(t)
         session.commit()
+
+        self.close()
 
 
