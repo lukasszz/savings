@@ -50,11 +50,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.asset_table.doubleClicked.connect(self.action_income_outcome_new)
         self.asset_table.clicked.connect(self.act_set_asset_filter)
-        self.asset_table.clicked.connect(self.act_filter)
 
         self.budget_table.doubleClicked.connect(self.act_budget_transfer)
         self.budget_table.clicked.connect(self.act_set_budget_filter)
-        self.budget_table.clicked.connect(self.act_filter)
 
         self.tab_trans()
 
@@ -87,6 +85,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         dlg.exec()
         self.budget_table.model().load_data()
+        self.act_filter()
 
     def action_income_outcome_new(self):
         dlg = TransferIncomeOutcomeEd()
@@ -102,6 +101,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dlg.exec()
         self.asset_table.model().load_data()
         self.budget_table.model().load_data()
+        self.act_filter()
 
     def tab_trans(self):
         self.dateFrom.setDate(date.today().replace(day=1))
