@@ -7,6 +7,7 @@ from PySide2.QtWidgets import QApplication, QCheckBox, QMainWindow, QStyledItemD
     QStyleOptionButton, QStyle, QAction
 from sqlalchemy import func, select, text
 
+from db import Session
 from db.model import Transaction, TransactionSplit, Asset, Budget
 from form import asset, budget
 from form.AssetEd import AssetEd
@@ -46,12 +47,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.setup_asset_table()
         self.setup_budget_table()
-        self.io_new.clicked.connect(lambda: self.action_income_outcome_new())
 
         self.asset_table.doubleClicked.connect(self.action_income_outcome_new)
+        self.asset_table.clicked.connect(self.act_set_asset_filter)
+        self.asset_table.clicked.connect(self.act_filter)
+
         self.budget_table.doubleClicked.connect(self.act_budget_transfer)
+        self.budget_table.clicked.connect(self.act_set_budget_filter)
+        self.budget_table.clicked.connect(self.act_filter)
 
         self.tab_trans()
+
+    def act_set_asset_filter(self):
+        id_ = self.get_selected_asset()
+        idx = self.asset.findData(id_, Qt.UserRole)
+        self.asset.setCurrentIndex(idx)
+
+        idx = self.budget.findData(None, Qt.UserRole)
+        self.budget.setCurrentIndex(idx)
+
+    def act_set_budget_filter(self):
+        id_ = self.get_selected_budget()
+        idx = self.budget.findData(id_, Qt.UserRole)
+        self.budget.setCurrentIndex(idx)
+
+        idx = self.asset.findData(None, Qt.UserRole)
+        self.asset.setCurrentIndex(idx)
 
     def act_budget_transfer(self):
         dlg = TransferBudgetEd()
@@ -94,16 +115,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         s = select(
             [t.id, t.date,
              t.desc,
-             Asset.name,
-             Budget.name,
-             text("SUM(CASE"
-                  "  WHEN amount>0 THEN amount "
-                  "  ELSE NULL "
-                  "END) AS income "),
-             text("SUM(CASE"
-                  "  WHEN amount<0 THEN amount "
-                  "  ELSE NULL "
-                  " END) AS outcome "),
+             # Asset.name,
+             # Budget.name,
+             func.sum(s.amount)
+             # text("SUM(CASE"
+             #      "  WHEN amount>0 THEN amount "
+             #      "  ELSE NULL "
+             #      "END) AS income "),
+             # text("SUM(CASE"
+             #      "  WHEN amount<0 THEN amount "
+             #      "  ELSE NULL "
+             #      " END) AS outcome "),
 
              # text("  CASE "
              #      "    WHEN group_concat(asset.name) IS NULL AND SUM(transaction_split.amount) == 0 THEN 'Budget transfer' "
@@ -115,31 +137,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             .select_from(Transaction.__table__.join(s).
                          join(Asset, isouter=True).
                          join(Budget, isouter=True)). \
-            group_by(s.id). \
+            group_by(t.id). \
             order_by(t.date.desc(), t.id.desc())
         model.set_sql(s)
 
         model.add_column_style(4, 'money')
         model.add_column_style(5, 'money')
-        model.load_data()
         self.trans_table.setModel(model)
         # self.trans_table.hideColumn(0)
 
-        self.asset.currentIndexChanged.connect(self.filter)
-        self.budget.currentIndexChanged.connect(self.filter)
-        self.search.returnPressed.connect(self.filter)
-        self.dateFrom.dateChanged.connect(self.filter)
+        self.asset.currentIndexChanged.connect(self.act_filter)
+        self.budget.currentIndexChanged.connect(self.act_filter)
+        self.search.returnPressed.connect(self.act_filter)
+        self.dateFrom.dateChanged.connect(self.act_filter)
 
-    def filter(self):
+        self.trans_table.clicked.connect(self.act_show_document)
+
+    def act_filter(self):
         model: TableModel = self.trans_table.model()
 
         fa = self.asset.currentData(Qt.UserRole)
         if fa:
             model.sql = model.sql.where(Asset.id == fa)
+            model.sql = model.sql.group_by(Asset.id)
 
         fb = self.budget.currentData(Qt.UserRole)
         if fb:
             model.sql = model.sql.where(Budget.id == fb)
+            model.sql = model.sql.group_by(Budget.id)
 
         fsearch = self.search.text()
         if len(fsearch.strip()):
@@ -163,6 +188,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.asset_table.setModel(model)
 
         # build_menu
+        act = QAction("Income/Outcome", self.asset_table)
+        act.triggered.connect(self.action_income_outcome_new)
+        self.asset_table.addAction(act)
+        sep = QAction("", self.asset_table)
+        sep.setSeparator(True)
+        self.asset_table.addAction(sep)
         act = QAction("New asset", self.asset_table)
         act.triggered.connect(self.act_asset_new)
         self.asset_table.addAction(act)
@@ -178,12 +209,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.asset_table.model().load_data()
 
     def act_asset_ed(self):
-        row = self.asset_table.selectedIndexes()[0].row()
-        idx = self.asset_table.model().index(row, 0)
-        id_ = self.asset_table.model().data(idx, Qt.UserRole)
+        id_ = self.get_selected_asset()
         dlg = AssetEd(id_)
         dlg.exec()
         self.asset_table.model().load_data()
+
+    def get_selected_asset(self):
+        row = self.asset_table.selectedIndexes()[0].row()
+        idx = self.asset_table.model().index(row, 0)
+        id_ = self.asset_table.model().data(idx, Qt.UserRole)
+        return id_
 
     def setup_budget_table(self):
         model = TableModel()
@@ -198,6 +233,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.budget_table.hideColumn(0)
         # Menu
+
+        act = QAction("Transfer", self.budget_table)
+        act.triggered.connect(self.act_budget_transfer)
+        self.budget_table.addAction(act)
+
+        sep = QAction("", self.budget_table)
+        sep.setSeparator(True)
+        self.budget_table.addAction(sep)
+
         act = QAction("New budget", self.budget_table)
         act.triggered.connect(self.act_budget_new)
         self.budget_table.addAction(act)
@@ -205,15 +249,46 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         act.triggered.connect(self.act_budget_ed)
         self.budget_table.addAction(act)
 
+
+
     def act_budget_new(self):
         dlg = BudgetEd()
         dlg.exec()
         self.budget_table.model().load_data()
 
     def act_budget_ed(self):
-        row = self.budget_table.selectedIndexes()[0].row()
-        idx = self.budget_table.model().index(row, 0)
-        id_ = self.budget_table.model().data(idx, Qt.UserRole)
+        id_ = self.get_selected_budget()
         dlg = BudgetEd(id_)
         dlg.exec()
         self.budget_table.model().load_data()
+
+    def get_selected_budget(self):
+        row = self.budget_table.selectedIndexes()[0].row()
+        idx = self.budget_table.model().index(row, 0)
+        id_ = self.budget_table.model().data(idx, Qt.UserRole)
+        return id_
+
+    def act_show_document(self):
+        row = self.trans_table.selectedIndexes()[0].row()
+        idx = self.trans_table.model().index(row, 0)
+        id_ = self.trans_table.model().data(idx, Qt.UserRole)
+        session = Session()
+        t = session.query(Transaction).get(id_)
+        self.t_ed_id.setText(str(t.id))
+        self.t_ed_desc.setText(t.desc)
+        self.t_ed_date.setDate(t.date)
+
+        model = TableModel()
+        s = TransactionSplit
+        model.set_sql(select(
+            [Asset.name,
+             Budget.name,
+             s.amount
+             ])
+            .select_from(TransactionSplit.__table__.
+                         join(Asset, isouter=True).
+                         join(Budget, isouter=True)). \
+                      where(s.id_transaction == t.id). \
+                order_by(Asset.name, Budget.name))
+        model.load_data()
+        self.t_ed_splits.setModel(model)

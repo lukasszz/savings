@@ -7,8 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>670</width>
-    <height>444</height>
+    <height>723</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Income/Outcome</string>
@@ -42,7 +54,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QTableView" name="budget_table"/>
+    <widget class="QTableView" name="budget_table">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLineEdit" name="sum">

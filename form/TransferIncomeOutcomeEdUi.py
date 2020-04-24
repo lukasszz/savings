@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'form/TransferIncomeOutcomeEd.ui',
 # licensing of 'form/TransferIncomeOutcomeEd.ui' applies.
 #
-# Created: Sun Apr 19 20:41:14 2020
+# Created: Fri Apr 24 13:34:06 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,13 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(670, 444)
+        Dialog.resize(670, 723)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
+        Dialog.setSizePolicy(sizePolicy)
+        Dialog.setBaseSize(QtCore.QSize(0, 0))
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.asset = QtWidgets.QComboBox(Dialog)
@@ -29,6 +35,11 @@ class Ui_Dialog(object):
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.budget_table = QtWidgets.QTableView(Dialog)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.budget_table.sizePolicy().hasHeightForWidth())
+        self.budget_table.setSizePolicy(sizePolicy)
         self.budget_table.setObjectName("budget_table")
         self.verticalLayout.addWidget(self.budget_table)
         self.sum = QtWidgets.QLineEdit(Dialog)
