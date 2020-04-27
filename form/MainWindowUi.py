@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'form/MainWindow.ui',
 # licensing of 'form/MainWindow.ui' applies.
 #
-# Created: Fri Apr 24 18:47:04 2020
+# Created: Fri Apr 24 21:21:17 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,7 +28,10 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.budget_table = QtWidgets.QTableView(self.centralwidget)
         self.budget_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.budget_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.budget_table.setObjectName("budget_table")
+        self.budget_table.horizontalHeader().setVisible(False)
+        self.budget_table.verticalHeader().setVisible(False)
         self.verticalLayout.addWidget(self.budget_table)
         self.horizontalLayout_6.addLayout(self.verticalLayout)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
@@ -41,7 +44,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.asset_table = QtWidgets.QTableView(self.centralwidget)
         self.asset_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.asset_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.asset_table.setObjectName("asset_table")
+        self.asset_table.horizontalHeader().setVisible(False)
+        self.asset_table.verticalHeader().setVisible(False)
         self.verticalLayout_2.addWidget(self.asset_table)
         self.horizontalLayout_6.addLayout(self.verticalLayout_2)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
@@ -69,8 +75,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
         self.trans_table = QtWidgets.QTableView(self.centralwidget)
         self.trans_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.trans_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.trans_table.setSortingEnabled(True)
         self.trans_table.setObjectName("trans_table")
+        self.trans_table.horizontalHeader().setVisible(False)
+        self.trans_table.verticalHeader().setVisible(False)
         self.verticalLayout_3.addWidget(self.trans_table)
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setObjectName("label_3")
@@ -100,7 +109,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.t_ed_desc)
         self.t_ed_splits = QtWidgets.QTableView(self.centralwidget)
         self.t_ed_splits.setEnabled(False)
+        self.t_ed_splits.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.t_ed_splits.setObjectName("t_ed_splits")
+        self.t_ed_splits.horizontalHeader().setVisible(False)
+        self.t_ed_splits.verticalHeader().setVisible(False)
         self.verticalLayout_4.addWidget(self.t_ed_splits)
         self.verticalLayout_3.addLayout(self.verticalLayout_4)
         self.verticalLayout_3.setStretch(2, 3)

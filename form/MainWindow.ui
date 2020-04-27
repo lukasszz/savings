@@ -32,6 +32,15 @@
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
        </widget>
       </item>
      </layout>
@@ -53,6 +62,15 @@
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
        </widget>
       </item>
      </layout>
@@ -99,9 +117,18 @@
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
        </widget>
       </item>
       <item>
@@ -152,6 +179,15 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
          </widget>
         </item>
        </layout>

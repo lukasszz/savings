@@ -99,7 +99,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         model.add_column_style(4, 'money')
         model.add_column_style(5, 'money')
         self.trans_table.setModel(model)
-        # self.trans_table.hideColumn(0)
+        self.trans_table.resizeColumnsToContents()
 
         self.asset.currentIndexChanged.connect(self.act_filter)
         self.budget.currentIndexChanged.connect(self.act_filter)
@@ -133,6 +133,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         model.sql = model.sql.where(Transaction.date >= fdateFrom)
 
         model.load_data()
+        self.trans_table.resizeColumnsToContents()
 
     def act_tran_delete(self):
         id_ = self.get_selected_transaction()
@@ -154,6 +155,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         model.add_column_style(2, 'money')
         model.load_data()
         self.asset_table.setModel(model)
+        self.asset_table.resizeColumnsToContents()
 
         # build_menu
         act = QAction("Income/Outcome", self.asset_table)
@@ -173,6 +175,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.asset_table.doubleClicked.connect(self.action_income_outcome_new)
         self.asset_table.clicked.connect(self.act_set_asset_filter)
+        self.asset_table.clicked.connect(self.act_clear_t_ed)
 
     def act_asset_new(self):
         dlg = AssetEd()
@@ -201,6 +204,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         model.load_data()
         model.add_column_style(2, 'money')
         self.budget_table.setModel(model)
+        self.budget_table.resizeColumnsToContents()
 
         self.budget_table.hideColumn(0)
         # Menu
@@ -222,6 +226,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.budget_table.doubleClicked.connect(self.act_budget_transfer)
         self.budget_table.clicked.connect(self.act_set_budget_filter)
+        self.budget_table.clicked.connect(self.act_clear_t_ed)
 
     def act_budget_new(self):
         dlg = BudgetEd()
@@ -261,10 +266,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                       where(s.id_transaction == t.id). \
                       order_by(Asset.name, Budget.name))
         model.load_data()
+
         self.t_ed_splits.setModel(model)
+        self.t_ed_splits.resizeColumnsToContents()
 
     def get_selected_transaction(self):
         row = self.trans_table.selectedIndexes()[0].row()
         idx = self.trans_table.model().index(row, 0)
         id_ = self.trans_table.model().data(idx, Qt.UserRole)
         return id_
+
+    def act_clear_t_ed(self):
+        self.t_ed_desc.setText('')
+        self.t_ed_id.setText('')
+        self.t_ed_splits.setModel(TableModel())

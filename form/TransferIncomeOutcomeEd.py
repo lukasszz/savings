@@ -49,7 +49,7 @@ class TransferIncomeOutcomeEd(QDialog, Ui_Dialog):
         model = QStandardItemModel()
 
         session = Session()
-        budgets = session.query(Budget).filter(True == Budget.active)
+        budgets = session.query(Budget).filter(True == Budget.active).order_by(Budget.name)
         b: Budget
         for b in budgets:
             id = QStandardItem(str(b.id))

@@ -26,6 +26,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, session
 
 from sqlalchemy.interfaces import PoolListener
+
+
 class ForeignKeysListener(PoolListener):
     def connect(self, dbapi_con, con_record):
         db_cursor = dbapi_con.execute('pragma foreign_keys=ON')
@@ -33,6 +35,14 @@ class ForeignKeysListener(PoolListener):
 
 Base = declarative_base()
 
-engine = create_engine('sqlite:///db.sqlite', echo=True,  listeners=[ForeignKeysListener()])
+engine = None
+# engine = create_engine('sqlite:////home/lukasz/Xc/GnuCash20/savings/savings_db.sqlite', echo=True,  listeners=[ForeignKeysListener()])
 
-Session: session = sessionmaker(bind=engine)
+Session: session = None
+
+
+def setup(url):
+    global engine
+    global Session
+    engine = create_engine(url, echo=True, listeners=[ForeignKeysListener()])
+    Session = sessionmaker(bind=engine)
