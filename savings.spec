@@ -27,10 +27,14 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           console=True )
+additional_files = [
+    ('db.sqlite', 'db.sqlite', 'DATA'),
+]
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,
+               additional_files,
                strip=False,
                upx=True,
                name='savings')
