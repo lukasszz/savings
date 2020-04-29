@@ -1,4 +1,5 @@
 import locale
+import os
 import sys
 from pathlib import Path
 from shutil import copyfile
@@ -9,11 +10,16 @@ import db
 
 
 def first_run():
+    if getattr(sys, 'frozen', False):
+        application_path = os.path.dirname(sys.executable)
+    elif __file__:
+        application_path = os.path.dirname(__file__)
+
     savdir = Path.home() / '.savings'
     if savdir.exists():
         return
     savdir.mkdir()
-    copyfile('db.sqlite', str(savdir / 'db.sqlite'))
+    copyfile(str(Path(application_path) / 'db.sqlite'), str(savdir / 'db.sqlite'))
 
 
 if __name__ == "__main__":

@@ -44,5 +44,5 @@ Session: session = None
 def setup(url):
     global engine
     global Session
-    engine = create_engine(url, echo=True, listeners=[ForeignKeysListener()])
+    engine = create_engine(url, echo=False, listeners=[ForeignKeysListener()])
     Session = sessionmaker(bind=engine)
