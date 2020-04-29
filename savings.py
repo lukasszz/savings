@@ -8,7 +8,7 @@ from PySide2.QtWidgets import QApplication
 
 import db
 
-
+# https://blog.kempj.co.uk/2014/10/packaging-python-app-windows/
 def first_run():
     if getattr(sys, 'frozen', False):
         application_path = os.path.dirname(sys.executable)
