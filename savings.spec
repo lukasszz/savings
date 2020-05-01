@@ -26,7 +26,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True )
+          console=False )
 additional_files = [
     ('db.sqlite', 'db.sqlite', 'DATA'),
 ]
