@@ -10,7 +10,6 @@ from PySide2.QtWidgets import QApplication
 import db
 
 
-# https://blog.kempj.co.uk/2014/10/packaging-python-app-windows/
 def first_run():
     if getattr(sys, 'frozen', False):
         application_path = os.path.dirname(sys.executable)
@@ -23,7 +22,7 @@ def first_run():
     if savdir.exists():
         return
     savdir.mkdir()
-    copyfile(str(Path(application_path) / 'db.sqlite'), str(savdir / 'db.sqlite'))
+    copyfile(str(Path(application_path) / 'db_template.sqlite'), str(savdir / 'db.sqlite'))
 
 
 def setup_db():
