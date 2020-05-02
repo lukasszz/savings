@@ -6,5 +6,8 @@ venv
 /db.sqlite
 *.autosave
 
+build/build/*
+build/dist/opt/savings/*
+build/target/*
 
 
