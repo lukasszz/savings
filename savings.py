@@ -16,9 +16,7 @@ def first_run():
     elif __file__:
         application_path = os.path.dirname(__file__)
 
-    print(application_path)
     savdir = Path.home() / '.savings'
-    print(savdir)
     if savdir.exists():
         return
     savdir.mkdir()
