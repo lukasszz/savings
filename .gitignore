@@ -7,6 +7,4 @@ venv
 *.autosave
 
 
-/dist/
-/build/
-/target/
+
