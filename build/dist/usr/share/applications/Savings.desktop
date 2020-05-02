@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Savings
+Type=Application
+Exec=/opt/savings/savings
+Terminal=false
+NoDisplay=false
+Categories=Utility;
+Version=0.0.0
+Icon=Savings

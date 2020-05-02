@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['savings.py'],
-             pathex=['/home/lukasz/workspace/savings'],
+a = Analysis(['../savings/savings.py'],
+             pathex=['../savings'],
              binaries=[],
              datas=[],
              hiddenimports=['PySide2.QtXml'],
@@ -28,7 +28,7 @@ exe = EXE(pyz,
           upx=True,
           console=False )
 additional_files = [
-    ('db.sqlite', 'db.sqlite', 'DATA'),
+    ('db_template.sqlite', '../savings/db_template.sqlite', 'DATA'),
 ]
 coll = COLLECT(exe,
                a.binaries,
