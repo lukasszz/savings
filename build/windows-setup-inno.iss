@@ -22,7 +22,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\workspace-lh\savings\target
+OutputDir=C:\workspace-lh\savings\build\target
 OutputBaseFilename=savings-setup-1.0
 Compression=lzma
 SolidCompression=yes
@@ -35,8 +35,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\workspace-lh\savings\dist\savings\savings.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\workspace-lh\savings\dist\savings\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\workspace-lh\savings\build\dist\savings\savings.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\workspace-lh\savings\build\dist\savings\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
