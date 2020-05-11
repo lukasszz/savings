@@ -5,6 +5,7 @@ import platform
 from pathlib import Path
 from shutil import copyfile
 
+from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication
 
 import db
@@ -33,6 +34,10 @@ def setup_db():
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, '')
+    # os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)  # enable highdpi scaling
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)  # use highdpi icons
+
     app = QApplication(sys.argv)
 
     first_run()
