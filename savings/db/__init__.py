@@ -1,8 +1,8 @@
 """
 Create db
 ---------
-from db import engine, Base
-from db.model import *
+from savings.db import engine, Base
+from savings.db.model import *
 Base.metadata.create_all(engine)
 
 Add rows
