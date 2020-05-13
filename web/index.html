@@ -63,13 +63,13 @@
         <em>Manage your financial goals across multiple assets</em>
       </h3>
       <div>
-      <a class="js-scroll-trigger" href="#about"><i class="fa fa-angle-down fa-xs" style="animation:fa-beat 5s ease infinite; color: black;"></i></a>
+      <a class="js-scroll-trigger" href="#feature"><i class="fa fa-angle-down fa-xs" style="animation:fa-beat 5s ease infinite; color: black;"></i></a>
         </div>
       <div>
-      <a class="js-scroll-trigger" href="#about"><i class="fa fa-angle-down fa-s" style="animation:fa-beat 5s ease infinite; color: black;"></i></a>
+      <a class="js-scroll-trigger" href="#feature"><i class="fa fa-angle-down fa-s" style="animation:fa-beat 5s ease infinite; color: black;"></i></a>
         </div>
       <div>
-      <a class="js-scroll-trigger" href="#about"><i class="fa fa-angle-down fa-lg" style="animation:fa-beat 5s ease infinite; color: black;"></i></a>
+      <a class="js-scroll-trigger" href="#feature"><i class="fa fa-angle-down fa-lg" style="animation:fa-beat 5s ease infinite; color: black;"></i></a>
         </div>
 
     </div>
@@ -79,73 +79,80 @@
       </div>
   </header>
 
-  <!-- About -->
-  <section class="content-section bg-light" id="about">
-    <div class="container text-center">
-      <div class="row">
-        <div class="col-lg-10 mx-auto">
-          <h2>Savings = envelopes + diversification
-          </h2>
-          <p class="lead mb-5"> This simple application  utilizes the envelope savings idea and solves the problem of assets diversifiaction</p>
+  <!--  Feature-->
+  <section class="content-section bg-light" id="feature">
+    <div class="container text-center" style="padding-top: 1em;">
+        <div class="content-section-heading" style=" padding-bottom: 2em;">
+        <h3 class="text-secondary mb-0">Features</h3>
+        <h2 class="mb-5">Savings</h2>
+          <p class="lead mb-5">This simple application utilizes the envelope savings idea and solves the problem of dividing budgtes inside and accross multiple asstes</p>
+      </div>
+
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="10000">
+        <ol class="carousel-indicators" style="filter: invert(1); bottom:-50px;">
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <!--        Split-->
+          <div class="carousel-item active" data-interval="17000" style="margin-top: 1em;">
+            <div class="row">
+              <div class="col-4 mx-auto">
+                <h4>Split your incomes into budgets</h4>
+                <p class="lead mb-5">Load money to one of your bank accounts and split it across your budgets.
+                  Money on your assets and budgets will be tracked separately but consistently.</p>
+              </div>
+              <div class="col-4 mx-auto">
+                <video autoplay="" muted="muted" preload="preload" loop="loop"
+                       style="width: 90%; height: auto;  border-radius: 8px;box-shadow: 0px 0px 8px 3px #ccc;"
+                       src="video/income.mp4"></video>
+              </div>
+            </div>
+          </div>
+          <!--        Transfer-->
+          <div class="carousel-item" data-interval="12000" style="margin-top: 1em;">
+            <div class="row">
+              <div class="col-4 mx-auto">
+                <video autoplay="" muted="muted" preload="preload" loop="loop"
+                       style="width: 90%; height: auto;  border-radius: 8px;box-shadow: 0px 0px 8px 3px #ccc;"
+                       src="video/transfer.mp4"></video>
+              </div>
+              <div class="col-4 mx-auto">
+                <h4>Transfer money among budgets</h4>
+                <p class="lead mb-5">Transfer your money to another budget without changing your asset balance.</p>
+              </div>
+            </div>
+          </div>
+          <!--      History-->
+          <div class="carousel-item" style="margin-top: 1em;">
+            <div class="row">
+              <div class="col-6 mx-auto">
+                <h4>History</h4>
+                <p class="lead mb-5">Browse the history of all your transactions in the context of the selected account
+                  or
+                  budget.</p>
+              </div>
+              <div class="col-6 mx-auto">
+                <video autoplay="" muted="muted" preload="preload" loop="loop"
+                       style="width: 100%; height: auto;  border-radius: 8px;box-shadow: 0px 0px 8px 3px #ccc;"
+                       src="video/history.mp4"></video>
+              </div>
+            </div>
+          </div>
         </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1);"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1);"></span>
+          <span class="sr-only">Next</span>
+        </a>
       </div>
     </div>
   </section>
 
-
-  <!-- Income -->
-  <section class="content-section bg-light" id="income">
-    <div class="container text-center">
-      <div class="row">
-        <div class="col-6 mx-auto">
-          <h2>Split your incomes</h2>
-          <p class="lead mb-5">Load money to one of your bank accounts and split it across your budgets.
-            Money on your assets and budgets will be tracked separately but consistently.</p>
-        </div>
-        <div class="col-6 mx-auto">
-          <video autoplay="" muted="muted" preload="preload" loop="loop"
-                 style="width: 90%; height: auto;  border-radius: 8px;box-shadow: 0px 0px 8px 3px #ccc;"
-                 src="video/income.mp4"></video>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Transfer -->
-  <section class="content-section bg-light" id="f-transfer">
-    <div class="container text-center">
-      <div class="row">
-        <div class="col-6 mx-auto">
-          <video autoplay="" muted="muted" preload="preload" loop="loop"
-                 style="width: 60%; height: auto;  border-radius: 8px;box-shadow: 0px 0px 8px 3px #ccc;"
-                 src="video/transfer.mp4"></video>
-        </div>
-        <div class="col-6 mx-auto">
-          <h2>Transfer money to another budget</h2>
-          <p class="lead mb-5">Transfer your money to another budget without changing your asset balance.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- History -->
-  <section class="content-section bg-light" id="f-history">
-    <div class="container text-center">
-      <div class="row">
-
-        <div class="col-6 mx-auto">
-          <h2>History</h2>
-          <p class="lead mb-5">Browse the history of all your transactions in the context of the selected account or
-            budget.</p>
-        </div>
-        <div class="col-6 mx-auto">
-          <video autoplay="" muted="muted" preload="preload" loop="loop"
-                 style="width: 100%; height: auto;  border-radius: 8px;box-shadow: 0px 0px 8px 3px #ccc;"
-                 src="video/history.mp4"></video>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Services -->
   <section class="content-section bg-primary text-white text-center" id="services">
