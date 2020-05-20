@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -R dist/opt/savings
 ../venv/bin/pyinstaller savings.spec
 mv dist/savings dist/opt/
 rm target/savings.rpm

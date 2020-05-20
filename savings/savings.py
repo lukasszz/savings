@@ -29,6 +29,7 @@ def setup_db():
         db_url = 'sqlite:///' + str(Path.home() / '.savings' / 'db.sqlite')
     else:
         db_url = 'sqlite:////' + str(Path.home() / '.savings' / 'db.sqlite')
+    # db_url = 'sqlite:///savings/db.sqlite'
     db.setup(db_url)
 
 
