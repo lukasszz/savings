@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>icons8/icons8-binoculars-500.png</file>
+        <file>icons8/icons8-bookmark-500.png</file>
+        <file>icons8/icons8-briefcase-500.png</file>
+        <file>icons8/icons8-clock-500.png</file>
+        <file>icons8/icons8-home-500.png</file>
+        <file>icons8/icons8-idea-500.png</file>
+        <file>icons8/icons8-key-500.png</file>
+        <file>icons8/icons8-mailbox-500.png</file>
+        <file>icons8/icons8-music-500.png</file>
+        <file>icons8/icons8-news-500.png</file>
+        <file>icons8/icons8-picture-500.png</file>
+        <file>icons8/icons8-puzzle-500.png</file>
+        <file>icons8/icons8-sun-500.png</file>
+        <file>icons8/icons8-twitter-500.png</file>
+    </qresource>
+</RCC>

@@ -22,6 +22,9 @@
     </widget>
    </item>
    <item>
+    <widget class="QComboBox" name="icon"/>
+   </item>
+   <item>
     <widget class="QCheckBox" name="active">
      <property name="text">
       <string>Active</string>

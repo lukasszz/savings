@@ -2,10 +2,11 @@ import locale
 import typing
 from decimal import Decimal
 from typing import Dict, Any
+import resources
 
 import PySide2
 from PySide2.QtCore import QAbstractTableModel, Qt
-from PySide2.QtGui import QColor
+from PySide2.QtGui import QColor, QIcon
 from sqlalchemy import text
 from sqlalchemy.orm import session
 
@@ -62,6 +63,10 @@ class TableModel(QAbstractTableModel):
             if value is None:
                 return None
             return str(value)
+        if role == Qt.DecorationRole:
+            if col in self.column_style:
+                if 'icon' in self.column_style[index.column()]:
+                    return QIcon(':/icon/icons8/icons8-binoculars-500.png')
         if role == Qt.UserRole:
             return self._data[index.row()][index.column()]
         if role == Qt.TextAlignmentRole:

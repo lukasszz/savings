@@ -1,5 +1,6 @@
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QDialog, QCheckBox, QLineEdit
+from PySide2.QtCore import QDirIterator
+from PySide2.QtGui import QIcon
+from PySide2.QtWidgets import QDialog
 
 from db import Session
 from db.model import Budget
@@ -13,6 +14,10 @@ class BudgetEd(QDialog, Ui_Dialog):
         super(BudgetEd, self).__init__(*args, **kwargs)
         self.setupUi(self)
         self.obj_id = obj_id
+
+        it = QDirIterator(':/icon/icons8/')
+        while it.hasNext():
+            self.icon.addItem(QIcon(it.next()), '')
 
         if self.obj_id is not None:
             session = Session()

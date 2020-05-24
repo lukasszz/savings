@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'form/BudgetEd.ui',
-# licensing of 'form/BudgetEd.ui' applies.
+# Form implementation generated from reading ui file 'BudgetEd.ui',
+# licensing of 'BudgetEd.ui' applies.
 #
-# Created: Sun Apr 19 18:08:31 2020
+# Created: Sat May 23 18:00:29 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,6 +19,9 @@ class Ui_Dialog(object):
         self.name = QtWidgets.QLineEdit(Dialog)
         self.name.setObjectName("name")
         self.verticalLayout.addWidget(self.name)
+        self.icon = QtWidgets.QComboBox(Dialog)
+        self.icon.setObjectName("icon")
+        self.verticalLayout.addWidget(self.icon)
         self.active = QtWidgets.QCheckBox(Dialog)
         self.active.setObjectName("active")
         self.verticalLayout.addWidget(self.active)
