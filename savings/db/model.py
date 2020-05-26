@@ -21,6 +21,7 @@ class Budget(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    icon = Column(String)
     active = Column(Boolean)
 
 
