@@ -6,7 +6,7 @@ block_cipher = None
 a = Analysis(['../savings/savings.py'],
              pathex=['../savings'],
              binaries=[],
-             datas=[],
+             datas=[('../resources/Savings.ico', '.')],
              hiddenimports=['PySide2.QtXml'],
              hookspath=[],
              runtime_hooks=[],
@@ -26,7 +26,9 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False )
+          console=False,
+          icon='../resources/Savings.ico')
+
 additional_files = [
     ('db_template.sqlite', '../savings/db_template.sqlite', 'DATA'),
 ]
