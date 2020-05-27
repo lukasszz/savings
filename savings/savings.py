@@ -7,15 +7,23 @@ from shutil import copyfile
 
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication
+from alembic import command
+from alembic.config import Config
 
 import db
 
 
+def get_db_url():
+    # if developing
+    # return 'sqlite:///db.sqlite'
+    if 'Windows' == platform.system():
+        return 'sqlite:///' + str(Path.home() / '.savings' / 'db.sqlite')
+    else:
+        return 'sqlite:////' + str(Path.home() / '.savings' / 'db.sqlite')
+
+
 def first_run():
-    if getattr(sys, 'frozen', False):
-        application_path = os.path.dirname(sys.executable)
-    elif __file__:
-        application_path = os.path.dirname(__file__)
+    application_path = get_app_global_path()
 
     savdir = Path.home() / '.savings'
     if savdir.exists():
@@ -24,12 +32,19 @@ def first_run():
     copyfile(str(Path(application_path) / 'db_template.sqlite'), str(savdir / 'db.sqlite'))
 
 
-def setup_db():
-    if 'Windows' == platform.system():
-        db_url = 'sqlite:///' + str(Path.home() / '.savings' / 'db.sqlite')
-    else:
-        db_url = 'sqlite:////' + str(Path.home() / '.savings' / 'db.sqlite')
-    db.setup(db_url)
+def get_app_global_path():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    elif __file__:
+        return os.path.dirname(__file__)
+
+
+def upgrade_db():
+
+    alembic_cfg = Config('alembic.ini')
+    alembic_cfg.set_main_option('script_location', str(Path(get_app_global_path()) / 'alembic'))
+    alembic_cfg.set_main_option('sqlalchemy.url', get_db_url())
+    command.upgrade(alembic_cfg, 'head')
 
 
 if __name__ == "__main__":
@@ -41,9 +56,11 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     first_run()
-    setup_db()
+    upgrade_db()
+    db.setup(get_db_url())
 
     from form.MainWindow import MainWindow
+
     w = MainWindow()
     w.show()
     sys.exit(app.exec_())
