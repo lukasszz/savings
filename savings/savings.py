@@ -1,3 +1,4 @@
+import ctypes
 import locale
 import os
 import sys
@@ -6,6 +7,7 @@ from pathlib import Path
 from shutil import copyfile
 
 from PySide2.QtCore import Qt
+from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QApplication
 
 import db
@@ -41,10 +43,20 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
+
     first_run()
     setup_db()
 
     from form.MainWindow import MainWindow
+
+    try:
+        # Include in try/except block if you're also targeting Mac/Linux
+        myappid = 'com.lukaszherok.savings'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    except ImportError:
+        pass
+
     w = MainWindow()
+    w.setWindowIcon(QIcon(':/savings/Savings.png'))
     w.show()
     sys.exit(app.exec_())

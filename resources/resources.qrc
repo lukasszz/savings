@@ -15,4 +15,9 @@
         <file>icons8/icons8-sun-500.png</file>
         <file>icons8/icons8-twitter-500.png</file>
     </qresource>
+    <qresource prefix="/savings">
+        <file>Savings.ico</file>
+        <file>Savings.png</file>
+        <file>Savings.svg</file>
+    </qresource>
 </RCC>
