@@ -3,7 +3,7 @@ from datetime import date
 from decimal import Decimal
 
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QStandardItemModel, QStandardItem
+from PySide2.QtGui import QStandardItemModel, QStandardItem, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QDialog, QTableView, QComboBox, QLineEdit
 
@@ -56,6 +56,7 @@ class TransferIncomeOutcomeEd(QDialog, Ui_Dialog):
             id.setEditable(False)
             name = QStandardItem(b.name)
             name.setEditable(False)
+            name.setIcon(QIcon(b.icon))
             amount = QStandardItem('')
             amount.setTextAlignment(Qt.AlignRight)
             model.appendRow([id, name, amount])
