@@ -63,12 +63,10 @@ if __name__ == "__main__":
 
     from form.MainWindow import MainWindow
 
-    try:
+    if 'Windows' == platform.system():
         # Include in try/except block if you're also targeting Mac/Linux
         myappid = 'com.lukaszherok.savings'
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-    except ImportError:
-        pass
 
     w = MainWindow()
     w.setWindowIcon(QIcon(':/savings/Savings.png'))

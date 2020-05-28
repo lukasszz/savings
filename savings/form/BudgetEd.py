@@ -1,5 +1,5 @@
-from PySide2.QtCore import QDirIterator
-from PySide2.QtGui import QIcon
+from PySide2.QtCore import QDirIterator, Qt
+from PySide2.QtGui import QIcon, QStandardItem
 from PySide2.QtWidgets import QDialog
 
 from db import Session
@@ -17,7 +17,8 @@ class BudgetEd(QDialog, Ui_Dialog):
 
         it = QDirIterator(':/icon/icons8/')
         while it.hasNext():
-            self.icon.addItem(QIcon(it.next()), '')
+            icon = it.next()
+            self.icon.addItem(QIcon(icon), '', icon)
 
         if self.obj_id is not None:
             session = Session()
@@ -38,6 +39,7 @@ class BudgetEd(QDialog, Ui_Dialog):
 
         a.name = self.name.text()
         a.active = self.active.isChecked()
+        a.icon = self.icon.currentData(Qt.UserRole)
 
         session.add(a)
         session.commit()

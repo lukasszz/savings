@@ -196,14 +196,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def setup_budget_table(self):
         model = TableModel()
-        model.set_sql("SELECT b.id, b.name, SUM(coalesce(s.amount, 0.00)) as amount, '' as icon\
+        model.set_sql("SELECT b.id, b.icon, b.name, SUM(coalesce(s.amount, 0.00)) as amount\
                             FROM budget AS b\
                                 LEFT OUTER JOIN transaction_split as s ON s.id_budget = b.id\
                             GROUP BY b.id\
                             ORDER BY name")
         model.load_data()
-        model.add_column_style(2, 'money')
-        model.add_column_style(3, 'icon')
+        model.add_column_style(3, 'money')
+        model.add_column_style(1, 'icon')
         self.budget_table.setModel(model)
         self.budget_table.resizeColumnsToContents()
 

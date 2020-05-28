@@ -60,13 +60,16 @@ class TableModel(QAbstractTableModel):
                 if 'money' in self.column_style[index.column()] \
                         and isinstance(value, int) or isinstance(value, float) or isinstance(value, Decimal):
                     return locale.currency(value, grouping=True)
+                if 'icon' in self.column_style[index.column()]:
+                    return ''
             if value is None:
                 return None
             return str(value)
         if role == Qt.DecorationRole:
+            value = self._data[index.row()][index.column()]
             if col in self.column_style:
                 if 'icon' in self.column_style[index.column()]:
-                    return QIcon(':/icon/icons8/icons8-binoculars-500.png')
+                    return QIcon(value)
         if role == Qt.UserRole:
             return self._data[index.row()][index.column()]
         if role == Qt.TextAlignmentRole:
