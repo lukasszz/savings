@@ -258,6 +258,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         s = TransactionSplit
         model.set_sql(select(
             [Asset.name,
+             Budget.icon,
              Budget.name,
              s.amount
              ])
@@ -267,6 +268,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                       where(s.id_transaction == t.id). \
                       order_by(Asset.name, Budget.name))
         model.load_data()
+        model.add_column_style(1, 'icon')
 
         self.t_ed_splits.setModel(model)
         self.t_ed_splits.resizeColumnsToContents()
