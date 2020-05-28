@@ -1,4 +1,4 @@
-from PySide2.QtGui import QStandardItemModel, QStandardItem, Qt
+from PySide2.QtGui import QStandardItemModel, QStandardItem, Qt, QIcon
 
 from db import Session
 from db.model import Budget
@@ -21,6 +21,7 @@ def get_model(with_empty=False):
         item = QStandardItem()
         item.setData(a.id, Qt.UserRole)
         item.setData(a.name, Qt.DisplayRole)
+        item.setIcon(QIcon(a.icon))
         model.appendRow(item)
 
     return model
