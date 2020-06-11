@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Savings"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "lukaszherok.com"
 #define MyAppURL "http://savings.lukaszherok.com/"
 #define MyAppExeName "savings.exe"
