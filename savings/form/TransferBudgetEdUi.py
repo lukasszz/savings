@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'form/TransferBudgetEd.ui',
-# licensing of 'form/TransferBudgetEd.ui' applies.
+# Form implementation generated from reading ui file 'TransferBudgetEd.ui',
+# licensing of 'TransferBudgetEd.ui' applies.
 #
-# Created: Sun Apr 19 18:21:02 2020
+# Created: Thu Jun 11 15:39:28 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(629, 203)
+        Dialog.resize(390, 203)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()

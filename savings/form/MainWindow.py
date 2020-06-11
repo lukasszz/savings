@@ -11,6 +11,7 @@ from form import asset, budget
 from form.AssetEd import AssetEd
 from form.BudgetEd import BudgetEd
 from form.MainWindowUi import Ui_MainWindow
+from form.TransferAssetEd import TransferAssetEd
 from form.TransferBudgetEd import TransferBudgetEd
 from form.TransferIncomeOutcomeEd import TransferIncomeOutcomeEd
 from ui.TableModel import TableModel
@@ -161,6 +162,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         act = QAction("Income/Outcome", self.asset_table)
         act.triggered.connect(self.action_income_outcome_new)
         self.asset_table.addAction(act)
+        act = QAction("Transfer", self.asset_table)
+        act.triggered.connect(self.act_asset_transfer)
+        self.asset_table.addAction(act)
         sep = QAction("", self.asset_table)
         sep.setSeparator(True)
         self.asset_table.addAction(sep)
@@ -181,6 +185,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dlg = AssetEd()
         dlg.exec()
         self.asset_table.model().load_data()
+
+    def act_asset_transfer(self):
+        dlg = TransferAssetEd()
+
+        row = self.asset_table.selectedIndexes()
+        if len(row) > 0:
+            row = row[0].row()
+            idx = self.asset_table.model().index(row, 0)
+            id_ = self.asset_table.model().data(idx, Qt.UserRole)
+            cidx = dlg.from_.findData(id_)
+            dlg.from_.setCurrentIndex(cidx)
+
+        dlg.exec()
+        self.asset_table.model().load_data()
+        self.act_filter()
+
 
     def act_asset_ed(self):
         id_ = self.get_selected_asset()
