@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'form/MainWindow.ui',
-# licensing of 'form/MainWindow.ui' applies.
+# Form implementation generated from reading ui file 'MainWindow.ui',
+# licensing of 'MainWindow.ui' applies.
 #
-# Created: Fri Apr 24 21:21:17 2020
+# Created: Fri Jun 12 17:14:07 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,7 +31,9 @@ class Ui_MainWindow(object):
         self.budget_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.budget_table.setObjectName("budget_table")
         self.budget_table.horizontalHeader().setVisible(False)
+        self.budget_table.horizontalHeader().setStretchLastSection(True)
         self.budget_table.verticalHeader().setVisible(False)
+        self.budget_table.verticalHeader().setStretchLastSection(False)
         self.verticalLayout.addWidget(self.budget_table)
         self.horizontalLayout_6.addLayout(self.verticalLayout)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
@@ -47,7 +49,9 @@ class Ui_MainWindow(object):
         self.asset_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.asset_table.setObjectName("asset_table")
         self.asset_table.horizontalHeader().setVisible(False)
+        self.asset_table.horizontalHeader().setStretchLastSection(True)
         self.asset_table.verticalHeader().setVisible(False)
+        self.asset_table.verticalHeader().setStretchLastSection(False)
         self.verticalLayout_2.addWidget(self.asset_table)
         self.horizontalLayout_6.addLayout(self.verticalLayout_2)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
@@ -79,7 +83,9 @@ class Ui_MainWindow(object):
         self.trans_table.setSortingEnabled(True)
         self.trans_table.setObjectName("trans_table")
         self.trans_table.horizontalHeader().setVisible(False)
+        self.trans_table.horizontalHeader().setStretchLastSection(True)
         self.trans_table.verticalHeader().setVisible(False)
+        self.trans_table.verticalHeader().setStretchLastSection(False)
         self.verticalLayout_3.addWidget(self.trans_table)
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setObjectName("label_3")
@@ -112,7 +118,9 @@ class Ui_MainWindow(object):
         self.t_ed_splits.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.t_ed_splits.setObjectName("t_ed_splits")
         self.t_ed_splits.horizontalHeader().setVisible(False)
+        self.t_ed_splits.horizontalHeader().setStretchLastSection(True)
         self.t_ed_splits.verticalHeader().setVisible(False)
+        self.t_ed_splits.verticalHeader().setStretchLastSection(False)
         self.verticalLayout_4.addWidget(self.t_ed_splits)
         self.verticalLayout_3.addLayout(self.verticalLayout_4)
         self.verticalLayout_3.setStretch(2, 3)
@@ -122,16 +130,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setStretch(1, 1)
         self.horizontalLayout_6.setStretch(2, 2)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1274, 29))
-        self.menubar.setObjectName("menubar")
-        self.menuSavings = QtWidgets.QMenu(self.menubar)
-        self.menuSavings.setObjectName("menuSavings")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuSavings.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -142,5 +143,4 @@ class Ui_MainWindow(object):
         self.label_2.setText(QtWidgets.QApplication.translate("MainWindow", "Assets", None, -1))
         self.label_4.setText(QtWidgets.QApplication.translate("MainWindow", "Transactions", None, -1))
         self.label_3.setText(QtWidgets.QApplication.translate("MainWindow", "Transaction details", None, -1))
-        self.menuSavings.setTitle(QtWidgets.QApplication.translate("MainWindow", "Savings", None, -1))
 

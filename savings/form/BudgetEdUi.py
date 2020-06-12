@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'BudgetEd.ui',
 # licensing of 'BudgetEd.ui' applies.
 #
-# Created: Sat May 23 18:00:29 2020
+# Created: Fri Jun 12 17:22:41 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(400, 300)
+        Dialog.resize(400, 142)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.name = QtWidgets.QLineEdit(Dialog)

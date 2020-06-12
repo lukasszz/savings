@@ -19,7 +19,6 @@ class AssetEd(QDialog, Ui_Dialog):
             a = session.query(Asset).get(self.obj_id)
             self.name.setText(a.name)
             self.active.setChecked(a.active)
-            self.currency.setCurrentText(a.currency)
         else:
             self.active.setChecked(True)
 
@@ -34,7 +33,6 @@ class AssetEd(QDialog, Ui_Dialog):
 
         a.name = self.name.text()
         a.active = self.active.isChecked()
-        a.currency = self.currency.currentText()
 
         session.add(a)
         session.commit()

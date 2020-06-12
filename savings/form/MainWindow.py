@@ -97,8 +97,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             order_by(t.date.desc(), t.id.desc())
         model.set_sql(s)
 
-        model.add_column_style(4, 'money')
-        model.add_column_style(5, 'money')
+        model.add_column_style(3, 'money')
         self.trans_table.setModel(model)
         self.trans_table.resizeColumnsToContents()
 
@@ -289,6 +288,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                       order_by(Asset.name, Budget.name))
         model.load_data()
         model.add_column_style(1, 'icon')
+        model.add_column_style(3, 'money')
 
         self.t_ed_splits.setModel(model)
         self.t_ed_splits.resizeColumnsToContents()
