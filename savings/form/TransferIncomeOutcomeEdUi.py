@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'form/TransferIncomeOutcomeEd.ui',
-# licensing of 'form/TransferIncomeOutcomeEd.ui' applies.
+# Form implementation generated from reading ui file 'TransferIncomeOutcomeEd.ui',
+# licensing of 'TransferIncomeOutcomeEd.ui' applies.
 #
-# Created: Fri Apr 24 13:34:06 2020
+# Created: Fri Jun 19 08:30:10 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(670, 723)
+        Dialog.resize(478, 533)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -41,6 +41,8 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(self.budget_table.sizePolicy().hasHeightForWidth())
         self.budget_table.setSizePolicy(sizePolicy)
         self.budget_table.setObjectName("budget_table")
+        self.budget_table.horizontalHeader().setStretchLastSection(True)
+        self.budget_table.verticalHeader().setStretchLastSection(False)
         self.verticalLayout.addWidget(self.budget_table)
         self.sum = QtWidgets.QLineEdit(Dialog)
         self.sum.setEnabled(False)
