@@ -22,10 +22,8 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=C:\workspace-lh\savings\build\target
-OutputBaseFilename=savings-setup-1.0.0
+OutputBaseFilename=savings-setup-1.1.1
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
