@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'TransferIncomeOutcomeEd.ui',
 # licensing of 'TransferIncomeOutcomeEd.ui' applies.
 #
-# Created: Fri Jun 19 08:30:10 2020
+# Created: Wed Jun 24 19:59:02 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,8 +40,12 @@ class Ui_Dialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.budget_table.sizePolicy().hasHeightForWidth())
         self.budget_table.setSizePolicy(sizePolicy)
+        self.budget_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.budget_table.setAlternatingRowColors(True)
         self.budget_table.setObjectName("budget_table")
+        self.budget_table.horizontalHeader().setVisible(False)
         self.budget_table.horizontalHeader().setStretchLastSection(True)
+        self.budget_table.verticalHeader().setVisible(False)
         self.budget_table.verticalHeader().setStretchLastSection(False)
         self.verticalLayout.addWidget(self.budget_table)
         self.sum = QtWidgets.QLineEdit(Dialog)

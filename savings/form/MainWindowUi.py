@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'MainWindow.ui',
 # licensing of 'MainWindow.ui' applies.
 #
-# Created: Fri Jun 12 17:14:07 2020
+# Created: Wed Jun 24 19:52:13 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,7 @@ class Ui_MainWindow(object):
         self.budget_table = QtWidgets.QTableView(self.centralwidget)
         self.budget_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.budget_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.budget_table.setAlternatingRowColors(True)
         self.budget_table.setObjectName("budget_table")
         self.budget_table.horizontalHeader().setVisible(False)
         self.budget_table.horizontalHeader().setStretchLastSection(True)
@@ -47,6 +48,7 @@ class Ui_MainWindow(object):
         self.asset_table = QtWidgets.QTableView(self.centralwidget)
         self.asset_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.asset_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.asset_table.setAlternatingRowColors(True)
         self.asset_table.setObjectName("asset_table")
         self.asset_table.horizontalHeader().setVisible(False)
         self.asset_table.horizontalHeader().setStretchLastSection(True)
@@ -80,6 +82,7 @@ class Ui_MainWindow(object):
         self.trans_table = QtWidgets.QTableView(self.centralwidget)
         self.trans_table.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.trans_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.trans_table.setAlternatingRowColors(True)
         self.trans_table.setSortingEnabled(True)
         self.trans_table.setObjectName("trans_table")
         self.trans_table.horizontalHeader().setVisible(False)
@@ -116,6 +119,7 @@ class Ui_MainWindow(object):
         self.t_ed_splits = QtWidgets.QTableView(self.centralwidget)
         self.t_ed_splits.setEnabled(False)
         self.t_ed_splits.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.t_ed_splits.setAlternatingRowColors(True)
         self.t_ed_splits.setObjectName("t_ed_splits")
         self.t_ed_splits.horizontalHeader().setVisible(False)
         self.t_ed_splits.horizontalHeader().setStretchLastSection(True)

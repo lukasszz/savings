@@ -35,6 +35,9 @@
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
         <attribute name="horizontalHeaderVisible">
          <bool>false</bool>
         </attribute>
@@ -70,6 +73,9 @@
         </property>
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <attribute name="horizontalHeaderVisible">
          <bool>false</bool>
@@ -131,6 +137,9 @@
         </property>
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="sortingEnabled">
          <bool>true</bool>
@@ -199,6 +208,9 @@
           </property>
           <property name="sizeAdjustPolicy">
            <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
           </property>
           <attribute name="horizontalHeaderVisible">
            <bool>false</bool>
