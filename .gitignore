@@ -12,3 +12,4 @@ build/dist/opt/savings/*
 build/target/*
 
 /build/dist/savings/*
+/build/dist/opt/
